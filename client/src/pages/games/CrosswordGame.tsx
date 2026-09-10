@@ -142,10 +142,10 @@ export default function CrosswordGame({ student, onBack }: Props) {
         score={activeCells.filter((c) => !!gridValues[c.r]?.[c.c]).length}
       />
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center">
           {/* Grid da Cruzadinha */}
-          <div className="bg-amber-50/60 p-4 rounded-3xl border-2 border-amber-200 shadow-inner">
+          <div className="bg-slate-50 p-4 rounded-lg border-2 border-slate-200 shadow-inner">
             <div
               className="grid gap-2"
               style={{
@@ -165,12 +165,12 @@ export default function CrosswordGame({ student, onBack }: Props) {
                     return (
                       <div
                         key={key}
-                        className="w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-2xl bg-amber-200/40 border border-amber-200/60"
+                        className="w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-lg bg-amber-200/40 border border-slate-200/60"
                       />
                     );
                   }
 
-                  let cellStyle = "bg-white border-amber-300 text-[#3D3580] focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-200";
+                  let cellStyle = "bg-white border-slate-300 text-slate-900 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-200";
                   if (isVerified) {
                     cellStyle = isCorrect
                       ? "bg-emerald-100 border-emerald-500 text-emerald-800"
@@ -180,7 +180,7 @@ export default function CrosswordGame({ student, onBack }: Props) {
                   return (
                     <div
                       key={key}
-                      className={`relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-2xl border-2 transition-all flex items-center justify-center ${cellStyle}`}
+                      className={`relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-lg border-2 transition-all flex items-center justify-center ${cellStyle}`}
                     >
                       {clueNum && (
                         <span className="absolute top-1 left-1.5 text-[10px] sm:text-xs font-black text-amber-600 select-none">
@@ -209,16 +209,16 @@ export default function CrosswordGame({ student, onBack }: Props) {
 
           {/* Lista de Pistas */}
           <div className="w-full lg:w-80 flex flex-col gap-4">
-            <h3 className="font-['Fredoka'] text-lg font-bold text-[#3D3580] border-b pb-1 border-amber-200">
+            <h3 className="font-['Fredoka'] text-lg font-bold text-slate-900 border-b pb-1 border-slate-200">
               Pistas do Desafio:
             </h3>
             <div className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
               {puzzle.clues.map((clue, idx) => (
                 <div
                   key={idx}
-                  className="bg-amber-50/70 p-3 rounded-2xl border border-amber-200 text-sm leading-snug"
+                  className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm leading-snug"
                 >
-                  <div className="font-['Fredoka'] font-bold text-amber-900 flex items-center justify-between mb-1">
+                  <div className="font-['Fredoka'] font-bold text-slate-800 flex items-center justify-between mb-1">
                     <span>
                       {clue.num}. {clue.dir === "H" ? "Horizontal" : "Vertical"}
                     </span>
@@ -234,7 +234,7 @@ export default function CrosswordGame({ student, onBack }: Props) {
             <button
               onClick={handleVerify}
               disabled={!isAllFilled || revealing}
-              className={`w-full py-3.5 rounded-2xl font-['Fredoka'] font-bold text-base transition-all shadow-md active:scale-95 ${
+              className={`w-full py-3.5 rounded-lg font-['Fredoka'] font-bold text-base transition-all shadow-sm active:scale-95 ${
                 isAllFilled && !revealing
                   ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white cursor-pointer"
                   : "bg-gray-200 text-gray-400 border border-gray-300 cursor-not-allowed"

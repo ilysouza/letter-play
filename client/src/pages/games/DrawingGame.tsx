@@ -118,10 +118,10 @@ export default function DrawingGame({ student, onBack }: Props) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
       {/* Topo personalizado para o desenho */}
-      <div className="flex items-center justify-between bg-white/95 backdrop-blur-md px-5 py-3.5 rounded-3xl shadow-sm border-2 border-amber-100 mb-4">
+      <div className="flex items-center justify-between bg-white/95 backdrop-blur-md px-5 py-3.5 rounded-lg shadow-sm border-2 border-slate-100 mb-4">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-2xl font-bold text-sm transition-all active:scale-95 border border-amber-200"
+          className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-amber-100 text-slate-800 rounded-lg font-bold text-sm transition-all active:scale-95 border border-slate-200"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Voltar</span>
@@ -129,7 +129,7 @@ export default function DrawingGame({ student, onBack }: Props) {
 
         <div className="flex items-center gap-2">
           <span className="text-2xl">🎨</span>
-          <h1 className="font-['Fredoka'] text-xl sm:text-2xl font-bold text-[#3D3580]">
+          <h1 className="font-['Fredoka'] text-xl sm:text-2xl font-bold text-slate-900">
             Desenho Livre
           </h1>
         </div>
@@ -137,7 +137,7 @@ export default function DrawingGame({ student, onBack }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={handleClear}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs sm:text-sm font-bold border border-rose-200 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs sm:text-sm font-bold border border-rose-200 active:scale-95 transition-all"
             title="Limpar tela"
           >
             <Trash2 className="w-4 h-4" />
@@ -145,7 +145,7 @@ export default function DrawingGame({ student, onBack }: Props) {
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-bold shadow-sm active:scale-95 transition-all"
             title="Baixar desenho"
           >
             <Download className="w-4 h-4" />
@@ -154,9 +154,9 @@ export default function DrawingGame({ student, onBack }: Props) {
         </div>
       </div>
 
-      <div className="bg-white/95 rounded-3xl p-4 sm:p-6 border-3 border-amber-200 shadow-md">
+      <div className="bg-white/95 rounded-lg p-4 sm:p-6 border border-slate-200 shadow-sm">
         {/* Barra de Ferramentas: Cores e Pincéis */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-amber-100">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
           {/* Cores */}
           <div className="flex items-center gap-2 overflow-x-auto py-1">
             {COLORS.map((c) => {
@@ -169,7 +169,7 @@ export default function DrawingGame({ student, onBack }: Props) {
                     setIsEraser(false);
                   }}
                   className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all border-2 active:scale-90 ${
-                    isSelected ? "ring-4 ring-amber-400 scale-110 border-white shadow-md" : "border-gray-200"
+                    isSelected ? "ring-4 ring-amber-400 scale-110 border-white shadow-sm" : "border-gray-200"
                   }`}
                   style={{ backgroundColor: c.hex }}
                   title={c.name}
@@ -182,10 +182,10 @@ export default function DrawingGame({ student, onBack }: Props) {
             {/* Borracha */}
             <button
               onClick={() => setIsEraser(!isEraser)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 font-bold text-xs sm:text-sm transition-all ${
                 isEraser
                   ? "bg-amber-400 border-amber-500 text-amber-950 scale-105 shadow-sm"
-                  : "bg-white border-amber-200 text-gray-700 hover:bg-amber-50"
+                  : "bg-white border-slate-200 text-gray-700 hover:bg-slate-50"
               }`}
             >
               <Eraser className="w-4 h-4" />
@@ -193,17 +193,17 @@ export default function DrawingGame({ student, onBack }: Props) {
             </button>
 
             {/* Tamanhos de Pincel */}
-            <div className="flex items-center gap-1 bg-amber-50 p-1 rounded-2xl border border-amber-200">
+            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-200">
               {SIZES.map((s) => {
                 const isSelected = selectedSize === s.size;
                 return (
                   <button
                     key={s.label}
                     onClick={() => setSelectedSize(s.size)}
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl font-['Fredoka'] font-bold text-xs flex items-center justify-center transition-all ${
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg font-['Fredoka'] font-bold text-xs flex items-center justify-center transition-all ${
                       isSelected
                         ? "bg-teal-500 text-white shadow-xs"
-                        : "text-amber-900 hover:bg-amber-100"
+                        : "text-slate-800 hover:bg-amber-100"
                     }`}
                   >
                     {s.label}
@@ -215,7 +215,7 @@ export default function DrawingGame({ student, onBack }: Props) {
         </div>
 
         {/* Área do Canvas com resolução interna 1200x900 */}
-        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border-2 border-amber-200 shadow-inner bg-white">
+        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden border-2 border-slate-200 shadow-inner bg-white">
           <canvas
             ref={canvasRef}
             width={1200}

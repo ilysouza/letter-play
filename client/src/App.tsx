@@ -62,7 +62,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBF0] text-[#2D3748] font-['Nunito',sans-serif]">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-['Nunito',sans-serif]">
       {/* 1. Tela Inicial */}
       {screen === "home" && (
         <HomeScreen onNavigate={(dest) => navigate(dest)} />

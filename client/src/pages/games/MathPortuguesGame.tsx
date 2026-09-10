@@ -165,18 +165,18 @@ export default function MathPortuguesGame({ student, onBack }: Props) {
         score={correctCount}
       />
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         <Hearts lives={lives} maxLives={MAX_LIVES} />
 
         {/* Dica do resultado em bolinhas laranjas após 1º erro */}
         {lives < MAX_LIVES && lives > 0 && !revealing && (
-          <div className="bg-[#FFFBEB] border-2 border-[#FDE68A] p-3 rounded-2xl my-3 text-center animate-in fade-in">
+          <div className="bg-[#FFFBEB] border-2 border-[#FDE68A] p-3 rounded-lg my-3 text-center animate-in fade-in">
             <div className="font-['Fredoka'] text-sm font-bold text-[#D97706] mb-2">
               💡 DICA — CONTE OS PONTOS DO RESULTADO:
             </div>
             <div className="flex flex-wrap items-center justify-center gap-1.5 max-w-sm mx-auto">
               {Array.from({ length: currentQ.resultNum }).map((_, i) => (
-                <span key={i} className="w-5 h-5 rounded-full bg-amber-500 shadow-xs inline-block" />
+                <span key={i} className="w-5 h-5 rounded-full bg-slate-500 shadow-xs inline-block" />
               ))}
             </div>
           </div>
@@ -185,11 +185,11 @@ export default function MathPortuguesGame({ student, onBack }: Props) {
         {/* Card da Equação com representação visual em bolinhas */}
         <div className="flex flex-col items-center justify-center my-6">
           <div
-            className={`px-8 py-6 rounded-3xl border-4 shadow-md flex flex-col items-center gap-3 ${
+            className={`px-8 py-6 rounded-lg border-4 shadow-sm flex flex-col items-center gap-3 ${
               isAddition ? "bg-emerald-50 border-emerald-400" : "bg-purple-50 border-purple-400"
             }`}
           >
-            <div className="flex items-center gap-4 sm:gap-6 font-['Fredoka'] text-4xl sm:text-5xl font-extrabold text-[#3D3580]">
+            <div className="flex items-center gap-4 sm:gap-6 font-['Fredoka'] text-4xl sm:text-5xl font-extrabold text-slate-900">
               <span>{currentQ.a}</span>
               <span className={isAddition ? "text-emerald-600" : "text-purple-600"}>
                 {currentQ.op}
@@ -201,7 +201,7 @@ export default function MathPortuguesGame({ student, onBack }: Props) {
               {student.audioEnabled && (
                 <button
                   onClick={() => speakMath(currentQ.a, currentQ.op, currentQ.b)}
-                  className="ml-2 bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-md active:scale-90 transition-all text-sm font-normal"
+                  className="ml-2 bg-slate-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-sm active:scale-90 transition-all text-sm font-normal"
                   title="Ouvir conta"
                 >
                   <Volume2 className="w-5 h-5" />
@@ -234,9 +234,9 @@ export default function MathPortuguesGame({ student, onBack }: Props) {
             const isDisabled = disabledOptions.includes(optionWord);
             const isRevealedCorrect = revealing && isCorrect;
 
-            let btnStyle = "bg-white hover:bg-amber-50 border-amber-300 text-[#3D3580]";
+            let btnStyle = "bg-white hover:bg-slate-50 border-slate-300 text-slate-900";
             if (isSelectedCorrect || isRevealedCorrect) {
-              btnStyle = "bg-emerald-500 border-emerald-600 text-white scale-102 shadow-md";
+              btnStyle = "bg-emerald-500 border-emerald-600 text-white scale-102 shadow-sm";
             } else if (isDisabled) {
               btnStyle = "bg-rose-100 border-rose-300 text-rose-400 opacity-60 cursor-not-allowed line-through";
             }
@@ -246,7 +246,7 @@ export default function MathPortuguesGame({ student, onBack }: Props) {
                 key={idx}
                 onClick={() => handleSelectOption(optionWord)}
                 disabled={isDisabled || revealing || selectedCorrect !== null}
-                className={`py-4 px-6 rounded-2xl font-['Fredoka'] text-2xl font-bold border-2 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 ${btnStyle}`}
+                className={`py-4 px-6 rounded-lg font-['Fredoka'] text-2xl font-bold border-2 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 ${btnStyle}`}
               >
                 <span>{optionWord}</span>
                 {(isSelectedCorrect || isRevealedCorrect) && <span>✓</span>}

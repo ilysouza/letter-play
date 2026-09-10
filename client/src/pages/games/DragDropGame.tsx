@@ -33,12 +33,12 @@ export default function DragDropGame({ student, onBack }: Props) {
   useEffect(() => {
     const list = getDailyDragWords();
     setWords(list);
-    initWord(list[0], 0);
+    initWord(list[0], 0, list);
   }, []);
 
   const currentWord = words[currentIndex];
 
-  const initWord = (item: DragWordItem, idx: number) => {
+  const initWord = (item: DragWordItem, idx: number, pool = words) => {
     if (!item) return;
     currentIndexRef.current = idx;
     setLives(MAX_LIVES);
@@ -49,7 +49,7 @@ export default function DragDropGame({ student, onBack }: Props) {
     setPlacedSyllables(new Array(item.syllables.length).fill(null));
 
     // Coletar distratores de outras palavras da sessão
-    const otherWords = words.filter((w) => w.word !== item.word);
+    const otherWords = pool.filter((w) => w.word !== item.word);
     const otherSyllables: string[] = [];
     otherWords.forEach((w) => {
       w.syllables.forEach((s) => {
@@ -180,7 +180,7 @@ export default function DragDropGame({ student, onBack }: Props) {
         score={correctCount}
       />
 
-      <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         <Hearts lives={lives} maxLives={MAX_LIVES} />
 
         {/* Dica visual inteligente */}
@@ -192,12 +192,12 @@ export default function DragDropGame({ student, onBack }: Props) {
             <img
               src={currentWord.image}
               alt={currentWord.word}
-              className="w-40 h-40 sm:w-44 sm:h-44 object-cover rounded-3xl border-4 border-amber-300 shadow-md transition-transform hover:scale-105"
+              className="w-40 h-40 sm:w-44 sm:h-44 object-cover rounded-lg border-4 border-slate-300 shadow-sm transition-transform hover:scale-105"
             />
             {student.audioEnabled && (
               <button
                 onClick={() => speak(currentWord.word)}
-                className="absolute bottom-2 right-2 bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-md active:scale-90 transition-all"
+                className="absolute bottom-2 right-2 bg-slate-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-sm active:scale-90 transition-all"
                 title="Ouvir palavra"
               >
                 <Volume2 className="w-5 h-5" />
@@ -206,7 +206,7 @@ export default function DragDropGame({ student, onBack }: Props) {
           </div>
 
           {revealing && (
-            <div className="mt-3 font-['Fredoka'] text-amber-700 bg-amber-100 px-4 py-1.5 rounded-2xl text-base font-bold animate-pulse">
+            <div className="mt-3 font-['Fredoka'] text-amber-700 bg-amber-100 px-4 py-1.5 rounded-lg text-base font-bold animate-pulse">
               RESPOSTA CORRETA: {currentWord.word}
             </div>
           )}
@@ -223,13 +223,13 @@ export default function DragDropGame({ student, onBack }: Props) {
                 key={idx}
                 onClick={() => handleSlotClick(idx)}
                 disabled={revealing || placed !== null}
-                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-3xl font-['Fredoka'] text-2xl sm:text-3xl font-bold flex items-center justify-center border-3 transition-all ${
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-lg font-['Fredoka'] text-2xl sm:text-3xl font-bold flex items-center justify-center border transition-all ${
                   placed
                     ? "bg-emerald-100 border-emerald-400 text-emerald-800 shadow-sm"
                     : isWrong
                     ? "bg-rose-100 border-rose-500 text-rose-700 animate-shake"
                     : selectedTile
-                    ? "bg-amber-50 border-amber-400 border-dashed hover:bg-amber-100 cursor-pointer animate-pulse"
+                    ? "bg-slate-50 border-amber-400 border-dashed hover:bg-amber-100 cursor-pointer animate-pulse"
                     : "bg-gray-50 border-gray-300 border-dashed"
                 }`}
               >
@@ -240,8 +240,8 @@ export default function DragDropGame({ student, onBack }: Props) {
         </div>
 
         {/* Pool de sílabas disponíveis */}
-        <div className="bg-amber-50/70 p-4 rounded-3xl border border-amber-200 mt-6">
-          <p className="text-center font-bold text-amber-900 text-sm mb-3">
+        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-6">
+          <p className="text-center font-bold text-slate-800 text-sm mb-3">
             Toque na sílaba e depois no quadrinho certo:
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -252,10 +252,10 @@ export default function DragDropGame({ student, onBack }: Props) {
                   key={tile.id}
                   onClick={() => handleTileClick(tile.id)}
                   disabled={revealing}
-                  className={`px-5 py-3 rounded-2xl font-['Fredoka'] text-2xl font-bold border-2 transition-all shadow-sm active:scale-95 ${
+                  className={`px-5 py-3 rounded-lg font-['Fredoka'] text-2xl font-bold border-2 transition-all shadow-sm active:scale-95 ${
                     isSelected
-                      ? "bg-amber-400 border-amber-500 text-amber-950 scale-105 shadow-md"
-                      : "bg-white border-amber-300 text-[#3D3580] hover:bg-amber-100"
+                      ? "bg-amber-400 border-amber-500 text-amber-950 scale-105 shadow-sm"
+                      : "bg-white border-slate-300 text-slate-900 hover:bg-amber-100"
                   }`}
                 >
                   {tile.text}

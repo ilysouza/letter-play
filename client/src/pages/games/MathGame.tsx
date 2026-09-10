@@ -188,7 +188,7 @@ export default function MathGame({ student, onBack }: Props) {
 
   const isAddition = currentQ.op === "+";
   const timerColor =
-    timeLeft > 10 ? "text-emerald-600 bg-emerald-50 border-emerald-300" : timeLeft > 5 ? "text-amber-600 bg-amber-50 border-amber-300" : "text-rose-600 bg-rose-50 border-rose-300 animate-pulse";
+    timeLeft > 10 ? "text-emerald-600 bg-emerald-50 border-emerald-300" : timeLeft > 5 ? "text-amber-600 bg-slate-50 border-slate-300" : "text-rose-600 bg-rose-50 border-rose-300 animate-pulse";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-4">
@@ -204,10 +204,10 @@ export default function MathGame({ student, onBack }: Props) {
         score={correctCount}
       />
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         <div className="flex items-center justify-between mb-2">
           <Hearts lives={lives} maxLives={MAX_LIVES} />
-          <div className={`flex items-center gap-1.5 font-['Fredoka'] font-bold text-lg px-3.5 py-1 rounded-2xl border-2 ${timerColor}`}>
+          <div className={`flex items-center gap-1.5 font-['Fredoka'] font-bold text-lg px-3.5 py-1 rounded-lg border-2 ${timerColor}`}>
             <Timer className="w-5 h-5" />
             <span>{timeLeft}s</span>
           </div>
@@ -215,7 +215,7 @@ export default function MathGame({ student, onBack }: Props) {
 
         {/* Dica de bolinhas após o 1º erro */}
         {lives < MAX_LIVES && lives > 0 && !revealing && (
-          <div className="bg-[#FFFBEB] border-2 border-[#FDE68A] p-3 rounded-2xl my-3 text-center">
+          <div className="bg-[#FFFBEB] border-2 border-[#FDE68A] p-3 rounded-lg my-3 text-center">
             <div className="font-['Fredoka'] text-sm font-bold text-[#D97706] mb-2">
               💡 DICA — CONTE OS PONTOS:
             </div>
@@ -238,7 +238,7 @@ export default function MathGame({ student, onBack }: Props) {
         {/* Card da Equação */}
         <div className="flex flex-col items-center justify-center my-6">
           <div
-            className={`px-8 sm:px-12 py-6 rounded-3xl border-4 shadow-md flex items-center gap-4 sm:gap-6 font-['Fredoka'] text-4xl sm:text-5xl font-extrabold ${
+            className={`px-8 sm:px-12 py-6 rounded-lg border-4 shadow-sm flex items-center gap-4 sm:gap-6 font-['Fredoka'] text-4xl sm:text-5xl font-extrabold ${
               isAddition
                 ? "bg-emerald-50 border-emerald-400 text-emerald-950"
                 : "bg-rose-50 border-rose-400 text-rose-950"
@@ -255,7 +255,7 @@ export default function MathGame({ student, onBack }: Props) {
             {student.audioEnabled && (
               <button
                 onClick={() => speakMath(currentQ.a, currentQ.op, currentQ.b)}
-                className="ml-2 bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-md active:scale-90 transition-all text-sm font-normal"
+                className="ml-2 bg-slate-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-sm active:scale-90 transition-all text-sm font-normal"
                 title="Ouvir conta"
               >
                 <Volume2 className="w-5 h-5" />
@@ -272,9 +272,9 @@ export default function MathGame({ student, onBack }: Props) {
             const isDisabled = disabledOptions.includes(option);
             const isRevealedCorrect = revealing && isCorrect;
 
-            let btnStyle = "bg-white hover:bg-amber-50 border-amber-300 text-[#3D3580]";
+            let btnStyle = "bg-white hover:bg-slate-50 border-slate-300 text-slate-900";
             if (isSelectedCorrect || isRevealedCorrect) {
-              btnStyle = "bg-emerald-500 border-emerald-600 text-white scale-105 shadow-md";
+              btnStyle = "bg-emerald-500 border-emerald-600 text-white scale-105 shadow-sm";
             } else if (isDisabled) {
               btnStyle = "bg-rose-100 border-rose-300 text-rose-400 opacity-60 cursor-not-allowed line-through";
             }
@@ -284,7 +284,7 @@ export default function MathGame({ student, onBack }: Props) {
                 key={idx}
                 onClick={() => handleSelectOption(option)}
                 disabled={isDisabled || revealing || selectedCorrect !== null}
-                className={`py-5 rounded-2xl font-['Fredoka'] text-3xl font-extrabold border-2 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 ${btnStyle}`}
+                className={`py-5 rounded-lg font-['Fredoka'] text-3xl font-extrabold border-2 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 ${btnStyle}`}
               >
                 <span>{option}</span>
                 {(isSelectedCorrect || isRevealedCorrect) && <span>✓</span>}

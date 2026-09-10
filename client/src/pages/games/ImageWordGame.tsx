@@ -39,6 +39,16 @@ export default function ImageWordGame({ student, onBack }: Props) {
   const handleWordClick = (word: string) => {
     if (revealing || selectedImageIdx === null) return;
 
+    // Cada palavra só pode ser ligada a uma imagem. Isso evita que
+    // a mesma opção seja usada duas vezes e mascara associações erradas.
+    const alreadyUsedElsewhere = Object.entries(connections).some(
+      ([idx, currentWord]) => idx !== String(selectedImageIdx) && currentWord === word
+    );
+    if (alreadyUsedElsewhere) {
+      setSelectedImageIdx(null);
+      return;
+    }
+
     // Conectar a imagem selecionada à palavra clicada
     setConnections((prev) => ({
       ...prev,
@@ -105,7 +115,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
         score={Object.keys(connections).length}
       />
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         <p className="text-center font-bold text-gray-600 text-sm mb-6">
           1. Toque em uma imagem para selecioná-la (ficará com borda destacada)
           <br />
@@ -115,7 +125,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Coluna das 4 Imagens */}
           <div className="flex flex-col gap-4">
-            <h3 className="font-['Fredoka'] text-lg font-bold text-[#3D3580] text-center">
+            <h3 className="font-['Fredoka'] text-lg font-bold text-slate-900 text-center">
               Imagens
             </h3>
             {pairs.map((pair, idx) => {
@@ -124,7 +134,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
               const isVerified = revealing && verificationResult[idx] !== undefined;
               const isCorrect = isVerified && verificationResult[idx];
 
-              let borderClass = "border-amber-200 hover:border-amber-400";
+              let borderClass = "border-slate-200 hover:border-amber-400";
               if (isSelected) borderClass = "border-rose-500 ring-4 ring-rose-200 scale-102";
               if (isVerified) {
                 borderClass = isCorrect ? "border-emerald-500 ring-4 ring-emerald-200" : "border-rose-500 ring-4 ring-rose-200";
@@ -134,18 +144,18 @@ export default function ImageWordGame({ student, onBack }: Props) {
                 <div
                   key={idx}
                   onClick={() => handleImageClick(idx)}
-                  className={`flex items-center gap-4 p-3 bg-amber-50/50 rounded-2xl border-3 transition-all cursor-pointer ${borderClass}`}
+                  className={`flex items-center gap-4 p-3 bg-slate-50/50 rounded-lg border transition-all cursor-pointer ${borderClass}`}
                 >
                   <img
                     src={pair.image}
                     alt="Item"
-                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border border-amber-300"
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border border-slate-300"
                   />
                   <div className="flex-1">
                     <div className="text-xs font-bold text-gray-500 uppercase">Ligado a:</div>
-                    <div className="font-['Fredoka'] text-xl font-bold text-[#3D3580] mt-1">
+                    <div className="font-['Fredoka'] text-xl font-bold text-slate-900 mt-1">
                       {connectedWord ? (
-                        <span className="bg-white px-3 py-1 rounded-xl border border-amber-200 shadow-xs inline-block">
+                        <span className="bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-xs inline-block">
                           {connectedWord}
                         </span>
                       ) : (
@@ -167,7 +177,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
 
           {/* Coluna das Palavras (4 corretas + 4 distratores) */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="font-['Fredoka'] text-lg font-bold text-[#3D3580] text-center">
+            <h3 className="font-['Fredoka'] text-lg font-bold text-slate-900 text-center">
               Palavras Disponíveis
             </h3>
             <div className="grid grid-cols-2 gap-2.5">
@@ -176,9 +186,9 @@ export default function ImageWordGame({ student, onBack }: Props) {
                 // Se estamos revelando e a palavra não foi associada a nada
                 const isUnusedDistractor = revealing && !isAssigned;
 
-                let style = "bg-white border-amber-300 text-[#3D3580] hover:bg-amber-100";
+                let style = "bg-white border-slate-300 text-slate-900 hover:bg-amber-100";
                 if (isAssigned) {
-                  style = "bg-amber-100 border-amber-400 text-amber-900 font-extrabold shadow-xs";
+                  style = "bg-amber-100 border-amber-400 text-slate-800 font-extrabold shadow-xs";
                 }
                 if (isUnusedDistractor) {
                   style = "bg-rose-50 border-rose-200 text-rose-400 opacity-60";
@@ -189,7 +199,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
                     key={idx}
                     onClick={() => handleWordClick(word)}
                     disabled={revealing}
-                    className={`py-3.5 px-3 rounded-2xl font-['Fredoka'] text-lg sm:text-xl font-bold border-2 transition-all active:scale-95 shadow-xs flex items-center justify-center gap-1.5 ${style}`}
+                    className={`py-3.5 px-3 rounded-lg font-['Fredoka'] text-lg sm:text-xl font-bold border-2 transition-all active:scale-95 shadow-xs flex items-center justify-center gap-1.5 ${style}`}
                   >
                     <span>{word}</span>
                     {isUnusedDistractor && <span className="text-rose-500 text-sm">✗</span>}
@@ -205,7 +215,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
           <button
             onClick={handleVerify}
             disabled={!allConnected || revealing}
-            className={`px-8 py-3.5 rounded-2xl font-['Fredoka'] font-bold text-lg transition-all shadow-md active:scale-95 ${
+            className={`px-8 py-3.5 rounded-lg font-['Fredoka'] font-bold text-lg transition-all shadow-sm active:scale-95 ${
               allConnected && !revealing
                 ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white cursor-pointer"
                 : "bg-gray-200 text-gray-400 border border-gray-300 cursor-not-allowed"

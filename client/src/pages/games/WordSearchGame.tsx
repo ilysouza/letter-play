@@ -131,7 +131,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
       if (nextFound.length === puzzle.words.length) {
         // Encontrou todas as 6 palavras!
         setTimeout(() => {
-          finalizeGame(6);
+          finalizeGame(puzzle.words.length);
         }, 800);
       }
     } else {
@@ -149,7 +149,8 @@ export default function WordSearchGame({ student, onBack }: Props) {
   const finalizeGame = (foundCountOverride?: number) => {
     if (!puzzle) return;
     const count = foundCountOverride !== undefined ? foundCountOverride : foundWords.length;
-    const score = count === 6 ? 100 : Math.round((count / 6) * 100);
+    const total = puzzle.words.length;
+    const score = count === total ? 100 : Math.round((count / total) * 100);
     const xp = count * 10;
     updateStudentScore(student.id, "word-search", score, xp);
     setFinished(true);
@@ -160,11 +161,12 @@ export default function WordSearchGame({ student, onBack }: Props) {
   }
 
   if (finished) {
-    const score = foundWords.length === 6 ? 100 : Math.round((foundWords.length / 6) * 100);
+    const total = puzzle.words.length;
+    const score = foundWords.length === total ? 100 : Math.round((foundWords.length / total) * 100);
     return (
       <GameResult
         score={score}
-        total={6}
+        total={puzzle.words.length}
         correct={foundWords.length}
         xpEarned={foundWords.length * 10}
         onBack={onBack}
@@ -187,12 +189,12 @@ export default function WordSearchGame({ student, onBack }: Props) {
         score={foundWords.length}
       />
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-4 sm:p-6 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-4 sm:p-6 border border-slate-200 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
           {/* Grid 10x10 de Letras */}
           <div
-            className={`p-3 sm:p-4 rounded-3xl bg-amber-50/60 border-2 transition-all ${
-              flashWrong ? "border-rose-400 bg-rose-50" : "border-amber-200"
+            className={`p-3 sm:p-4 rounded-lg bg-slate-50 border-2 transition-all ${
+              flashWrong ? "border-rose-400 bg-rose-50" : "border-slate-200"
             }`}
           >
             <div className="grid grid-cols-10 gap-1 sm:gap-1.5 touch-none">
@@ -202,7 +204,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
                   const highlightColorIdx = cellHighlights[`${r}-${c}`];
                   const hasFoundColor = highlightColorIdx !== undefined;
 
-                  let cellStyle = "bg-white text-gray-800 border-amber-200 hover:bg-amber-100";
+                  let cellStyle = "bg-white text-gray-800 border-slate-200 hover:bg-amber-100";
 
                   if (isSelected) {
                     cellStyle = "bg-amber-400 text-amber-950 font-black scale-105 border-amber-500 shadow-xs";
@@ -216,7 +218,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
                       key={`${r}-${c}`}
                       onPointerDown={() => handlePointerDown(r, c)}
                       onPointerEnter={() => handlePointerEnter(r, c)}
-                      className={`w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-xl font-['Fredoka'] text-sm sm:text-base md:text-lg flex items-center justify-center border transition-all cursor-pointer select-none ${cellStyle}`}
+                      className={`w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg font-['Fredoka'] text-sm sm:text-base md:text-lg flex items-center justify-center border transition-all cursor-pointer select-none ${cellStyle}`}
                     >
                       {letter}
                     </div>
@@ -228,7 +230,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
 
           {/* Lista Lateral de Palavras com imagens */}
           <div className="w-full lg:w-72 flex flex-col gap-2.5">
-            <div className="text-sm font-bold text-amber-900 mb-1 flex items-center justify-between">
+            <div className="text-sm font-bold text-slate-800 mb-1 flex items-center justify-between">
               <span>Palavras a encontrar:</span>
               <span className="font-['Fredoka'] text-base text-teal-600">
                 {foundWords.length}/6
@@ -244,16 +246,16 @@ export default function WordSearchGame({ student, onBack }: Props) {
                 return (
                   <div
                     key={idx}
-                    className={`flex items-center gap-2.5 p-2 rounded-2xl border-2 transition-all ${
+                    className={`flex items-center gap-2.5 p-2 rounded-lg border-2 transition-all ${
                       isFound && pal
                         ? `${pal.bg} ${pal.text} ${pal.border} opacity-95 scale-98 shadow-xs`
-                        : "bg-amber-50/50 border-amber-200 text-gray-700"
+                        : "bg-slate-50/50 border-slate-200 text-gray-700"
                     }`}
                   >
                     <img
                       src={item.image}
                       alt={item.word}
-                      className="w-9 h-9 object-cover rounded-xl border border-amber-300"
+                      className="w-9 h-9 object-cover rounded-lg border border-slate-300"
                     />
                     <span className="font-['Fredoka'] font-bold text-base flex-1">
                       {item.word}
@@ -264,10 +266,10 @@ export default function WordSearchGame({ student, onBack }: Props) {
               })}
             </div>
 
-            <div className="mt-4 pt-2 border-t border-amber-200">
+            <div className="mt-4 pt-2 border-t border-slate-200">
               <button
                 onClick={() => finalizeGame()}
-                className="w-full py-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-2xl border border-amber-300 transition-all active:scale-95 text-sm"
+                className="w-full py-2.5 bg-amber-100 hover:bg-amber-200 text-slate-800 font-bold rounded-lg border border-slate-300 transition-all active:scale-95 text-sm"
               >
                 Finalizar Desafio
               </button>

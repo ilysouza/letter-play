@@ -166,10 +166,10 @@ export default function WordRaceGame({ student, onBack }: Props) {
       : "";
 
   const timerColor =
-    timeLeft > 15 ? "text-emerald-600 bg-emerald-50 border-emerald-300" : timeLeft > 8 ? "text-amber-600 bg-amber-50 border-amber-300" : "text-rose-600 bg-rose-50 border-rose-300 animate-pulse";
+    timeLeft > 15 ? "text-emerald-600 bg-emerald-50 border-emerald-300" : timeLeft > 8 ? "text-amber-600 bg-slate-50 border-slate-300" : "text-rose-600 bg-rose-50 border-rose-300 animate-pulse";
 
   return (
-    <div className={`max-w-4xl mx-auto px-4 py-4 transition-colors duration-200 ${flashWrong ? "bg-rose-100/40 rounded-3xl" : ""}`}>
+    <div className={`max-w-4xl mx-auto px-4 py-4 transition-colors duration-200 ${flashWrong ? "bg-rose-100/40 rounded-lg" : ""}`}>
       <GameHeader
         title="Corrida das Palavras"
         emoji="🏎️"
@@ -182,9 +182,9 @@ export default function WordRaceGame({ student, onBack }: Props) {
         score={correctCount}
       />
 
-      <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border-3 border-amber-200 shadow-md">
+      <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-sm">
         {/* Race Track / Barra de corrida */}
-        <div className="relative mb-6 bg-amber-100/80 rounded-2xl p-2.5 border border-amber-200">
+        <div className="relative mb-6 bg-amber-100/80 rounded-lg p-2.5 border border-slate-200">
           <div className="flex gap-1.5 h-3">
             {words.map((_, i) => (
               <div
@@ -209,7 +209,7 @@ export default function WordRaceGame({ student, onBack }: Props) {
         <div className="flex items-center justify-between">
           <Hearts lives={lives} maxLives={MAX_LIVES} />
           {/* Timer */}
-          <div className={`flex items-center gap-1.5 font-['Fredoka'] font-bold text-lg px-3.5 py-1 rounded-2xl border-2 ${timerColor}`}>
+          <div className={`flex items-center gap-1.5 font-['Fredoka'] font-bold text-lg px-3.5 py-1 rounded-lg border-2 ${timerColor}`}>
             <Timer className="w-5 h-5" />
             <span>{timeLeft}s</span>
           </div>
@@ -223,12 +223,12 @@ export default function WordRaceGame({ student, onBack }: Props) {
             <img
               src={currentWordObj.image}
               alt="Ilustração"
-              className="w-40 h-40 sm:w-44 sm:h-44 object-cover rounded-3xl border-4 border-amber-300 shadow-md"
+              className="w-40 h-40 sm:w-44 sm:h-44 object-cover rounded-lg border-4 border-slate-300 shadow-sm"
             />
             {student.audioEnabled && (
               <button
                 onClick={() => speak(currentWordObj.word)}
-                className="absolute bottom-2 right-2 bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-md active:scale-90 transition-all"
+                className="absolute bottom-2 right-2 bg-slate-500 hover:bg-amber-600 text-white p-2.5 rounded-full shadow-sm active:scale-90 transition-all"
                 title="Ouvir palavra"
               >
                 <Volume2 className="w-5 h-5" />
@@ -244,11 +244,11 @@ export default function WordRaceGame({ student, onBack }: Props) {
             return (
               <div
                 key={idx}
-                className={`w-14 h-16 sm:w-16 sm:h-20 rounded-2xl font-['Fredoka'] text-3xl font-bold flex items-center justify-center border-3 transition-all ${
+                className={`w-14 h-16 sm:w-16 sm:h-20 rounded-lg font-['Fredoka'] text-3xl font-bold flex items-center justify-center border transition-all ${
                   filledLetter
                     ? "bg-emerald-100 border-emerald-400 text-emerald-800 scale-102"
                     : idx === currentSlots.length
-                    ? "bg-amber-50 border-amber-400 border-dashed animate-pulse"
+                    ? "bg-slate-50 border-amber-400 border-dashed animate-pulse"
                     : "bg-gray-50 border-gray-200 border-dashed"
                 }`}
               >
@@ -259,8 +259,8 @@ export default function WordRaceGame({ student, onBack }: Props) {
         </div>
 
         {/* Letras embaralhadas clicáveis */}
-        <div className="bg-amber-50/70 p-4 rounded-3xl border border-amber-200 mt-6">
-          <p className="text-center font-bold text-amber-900 text-sm mb-3">
+        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-6">
+          <p className="text-center font-bold text-slate-800 text-sm mb-3">
             Toque nas letras na ordem certa bem rápido:
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -268,7 +268,7 @@ export default function WordRaceGame({ student, onBack }: Props) {
               <button
                 key={item.id}
                 onClick={() => handleLetterClick(item)}
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl font-['Fredoka'] text-3xl font-bold bg-white hover:bg-amber-100 text-[#3D3580] border-2 border-amber-300 shadow-sm active:scale-90 transition-all flex items-center justify-center"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg font-['Fredoka'] text-3xl font-bold bg-white hover:bg-amber-100 text-slate-900 border-2 border-slate-300 shadow-sm active:scale-90 transition-all flex items-center justify-center"
               >
                 {item.letter}
               </button>

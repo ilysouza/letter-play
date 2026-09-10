@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeft, Sparkles, Trophy, Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import { getLevelInfo } from "@/store";
 
 interface GameHeaderProps {
@@ -13,86 +13,46 @@ interface GameHeaderProps {
 
 export function GameHeader({ title, emoji, onBack, progress, total, score }: GameHeaderProps) {
   const pct = Math.min(100, Math.round((progress / Math.max(1, total)) * 100));
-
   return (
-    <header className="w-full max-w-4xl mx-auto mb-6">
-      <div className="flex items-center justify-between bg-white/95 backdrop-blur-md px-5 py-3.5 rounded-3xl shadow-sm border-2 border-amber-100">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-2xl font-bold text-sm transition-all active:scale-95 border border-amber-200"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Voltar</span>
+    <header className="w-full max-w-4xl mx-auto mb-5">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+        <button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-950 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Voltar
         </button>
-
-        <div className="flex items-center gap-2.5">
-          {emoji && <span className="text-2xl">{emoji}</span>}
-          <h1 className="font-['Fredoka'] text-xl sm:text-2xl font-bold text-[#3D3580] tracking-wide">
-            {title}
-          </h1>
+        <div className="flex min-w-0 items-center gap-2">
+          {emoji && <span className="text-lg grayscale">{emoji}</span>}
+          <h1 className="truncate font-title text-xl sm:text-2xl font-bold text-slate-900">{title}</h1>
         </div>
-
-        <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 text-amber-950 font-extrabold px-4 py-1.5 rounded-2xl text-sm shadow-sm">
-          <span>⭐</span>
-          <span>
-            {score} / {total}
-          </span>
-        </div>
+        <div className="text-sm font-bold text-slate-600 whitespace-nowrap">{score}/{total}</div>
       </div>
-
-      {/* Barra de progresso vibrante */}
-      <div className="w-full bg-amber-100/70 h-3.5 rounded-full mt-3 overflow-hidden p-0.5 border border-amber-200">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-[#FF6B6B] via-[#F59E0B] to-[#4ECDC4] transition-all duration-500 ease-out"
-          style={{ width: `${pct}%` }}
-        />
+      <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+        <div className="h-full rounded-full bg-teal-500 transition-all duration-500" style={{ width: `${pct}%` }} />
       </div>
     </header>
   );
 }
 
-interface HeartsProps {
-  lives: number;
-  maxLives?: number;
-}
-
-export function Hearts({ lives, maxLives = 2 }: HeartsProps) {
+export function Hearts({ lives, maxLives = 2 }: { lives: number; maxLives?: number }) {
   return (
-    <div className="flex items-center justify-center gap-2 my-2">
-      {Array.from({ length: maxLives }).map((_, i) => {
-        const isAlive = i < lives;
-        return (
-          <div
-            key={i}
-            className={`transition-all duration-300 transform ${
-              isAlive ? "scale-100 text-rose-500 drop-shadow-sm" : "scale-75 text-gray-300 opacity-40"
-            }`}
-          >
-            <Heart className={`w-8 h-8 ${isAlive ? "fill-rose-500 stroke-rose-600" : "fill-gray-200 stroke-gray-300"}`} />
-          </div>
-        );
-      })}
+    <div className="flex items-center gap-1 text-sm text-slate-500" aria-label={`${lives} vidas restantes`}>
+      <span className="mr-1 font-semibold">Vidas</span>
+      {Array.from({ length: maxLives }).map((_, i) => (
+        <Heart key={i} className={`h-4 w-4 ${i < lives ? "fill-rose-400 text-rose-400" : "text-slate-300"}`} />
+      ))}
     </div>
   );
 }
 
-interface HintBoxProps {
-  hint: string;
-}
-
-export function HintBox({ hint }: HintBoxProps) {
+export function HintBox({ hint }: { hint: string }) {
   return (
-    <div className="bg-[#FFFBEB] border-2 border-[#FDE68A] text-[#B45309] px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 max-w-lg mx-auto my-3 shadow-xs animate-in fade-in duration-300">
-      <span className="text-xl">💡</span>
-      <p className="font-['Fredoka'] text-sm sm:text-base font-semibold tracking-wide">
-        DICA: <span className="font-bold text-[#D97706]">{hint}</span>
-      </p>
+    <div className="mx-auto my-3 max-w-lg border-l-2 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+      <span className="font-bold">Dica:</span> {hint}
     </div>
   );
 }
 
 interface GameResultProps {
-  score: number; // 0-100
+  score: number;
   total: number;
   correct: number;
   onBack: () => void;
@@ -101,69 +61,22 @@ interface GameResultProps {
 
 export function GameResult({ score, total, correct, onBack, xpEarned }: GameResultProps) {
   const level = getLevelInfo(score);
-
   return (
-    <div className="min-h-[75vh] flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center border-4 border-amber-200 shadow-xl relative overflow-hidden">
-        {/* Confetes decorativos sutis */}
-        <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-pink-400 via-amber-400 to-teal-400" />
-
-        <div className="w-24 h-24 mx-auto mb-4 bg-amber-50 rounded-full flex items-center justify-center border-2 border-amber-200 shadow-inner">
-          <span className="text-5xl animate-bounce">{level.emoji}</span>
-        </div>
-
-        <h2 className="font-['Fredoka'] text-3xl font-bold text-[#3D3580] mb-2">
-          {score >= 80 ? "Sensacional!" : score >= 50 ? "Muito Bem!" : "Bom Esforço!"}
+    <div className="min-h-[70vh] flex items-center justify-center p-4">
+      <div className="w-full max-w-md border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <div className="mb-5 text-4xl grayscale">{level.emoji}</div>
+        <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-teal-600">Atividade concluída</p>
+        <h2 className="font-title mb-2 text-3xl font-bold text-slate-900">
+          {score >= 80 ? "Muito bem!" : score >= 50 ? "Bom trabalho!" : "Continue praticando"}
         </h2>
-
-        <p className="text-gray-600 text-base mb-6 font-medium">
-          {score >= 80
-            ? "Você brilhou muito nesta atividade!"
-            : score >= 50
-            ? "Você está aprendendo cada vez mais rápido!"
-            : "Continue praticando, você vai longe!"}
-        </p>
-
-        {/* Box de métricas */}
-        <div className="bg-amber-50/80 rounded-2xl p-4 border border-amber-200/80 mb-6 flex justify-around items-center">
-          <div>
-            <div className="text-xs font-bold text-gray-500 uppercase">Acertos</div>
-            <div className="font-['Fredoka'] text-2xl font-extrabold text-[#3D3580]">
-              {correct} / {total}
-            </div>
-          </div>
-          <div className="h-8 w-px bg-amber-200" />
-          <div>
-            <div className="text-xs font-bold text-gray-500 uppercase">Pontuação</div>
-            <div className="font-['Fredoka'] text-2xl font-extrabold text-teal-600">
-              {score}%
-            </div>
-          </div>
-          {xpEarned !== undefined && (
-            <>
-              <div className="h-8 w-px bg-amber-200" />
-              <div>
-                <div className="text-xs font-bold text-gray-500 uppercase">XP Ganho</div>
-                <div className="font-['Fredoka'] text-2xl font-extrabold text-amber-500 flex items-center justify-center gap-1">
-                  <span>+{xpEarned}</span>
-                </div>
-              </div>
-            </>
-          )}
+        <p className="mb-6 text-sm text-slate-500">Cada tentativa ajuda você a aprender um pouco mais.</p>
+        <div className="mb-6 grid grid-cols-3 divide-x divide-slate-200 border-y border-slate-200 py-4">
+          <div><div className="text-[11px] font-bold uppercase text-slate-400">Acertos</div><div className="font-title text-xl font-bold text-slate-900">{correct}/{total}</div></div>
+          <div><div className="text-[11px] font-bold uppercase text-slate-400">Score</div><div className="font-title text-xl font-bold text-teal-600">{score}%</div></div>
+          <div><div className="text-[11px] font-bold uppercase text-slate-400">XP</div><div className="font-title text-xl font-bold text-amber-600">+{xpEarned ?? 0}</div></div>
         </div>
-
-        <div className="mb-6 inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300">
-          Nível: {level.label} {level.emoji}
-        </div>
-
-        <div>
-          <button
-            onClick={onBack}
-            className="w-full py-3.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-['Fredoka'] font-bold text-lg rounded-2xl shadow-md transition-all active:scale-95"
-          >
-            Voltar aos Jogos
-          </button>
-        </div>
+        <p className="mb-6 text-sm text-slate-500">Nível: <strong className="text-slate-800">{level.label}</strong></p>
+        <button onClick={onBack} className="w-full bg-slate-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-700 active:scale-[0.99]">Voltar aos jogos</button>
       </div>
     </div>
   );

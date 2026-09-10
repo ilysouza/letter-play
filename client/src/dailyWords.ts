@@ -1,5 +1,8 @@
 // dailyWords.ts — Conteúdo pedagógico e rotação diária de atividades
 import dinoImg from "@/imports/dino.png";
+import butterflyImg from "@/imports/butterfly.jpg";
+import llamaImg from "@/imports/llama.jpg";
+import chocolateImg from "@/imports/chocolate.jpg";
 
 // Imagens de palavras Unsplash de alta qualidade (31 palavras)
 export const WORD_IMAGES: Record<string, string> = {
@@ -18,7 +21,7 @@ export const WORD_IMAGES: Record<string, string> = {
   CACHORRO: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=400&fit=crop&auto=format",
   GIRAFA: "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=400&h=400&fit=crop&auto=format",
   ELEFANTE: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=400&h=400&fit=crop&auto=format",
-  BORBOLETA: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&h=400&fit=crop&auto=format",
+  BORBOLETA: butterflyImg,
   BANANA: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&h=400&fit=crop&auto=format",
   ABACAXI: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=400&h=400&fit=crop&auto=format",
   BICICLETA: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&h=400&fit=crop&auto=format",
@@ -28,8 +31,8 @@ export const WORD_IMAGES: Record<string, string> = {
   PEIXE: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=400&h=400&fit=crop&auto=format",
   TARTARUGA: "https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=400&h=400&fit=crop&auto=format",
   GALINHA: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=400&fit=crop&auto=format",
-  LHAMA: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop&auto=format",
-  CHOCOLATE: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&h=400&fit=crop&auto=format",
+  LHAMA: llamaImg,
+  CHOCOLATE: chocolateImg,
   PASSARINHO: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=400&h=400&fit=crop&auto=format",
   DINOSSAURO: dinoImg,
   CHAVE: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&h=400&fit=crop&auto=format",
@@ -389,7 +392,7 @@ export const CROSSWORD_POOL: CrosswordPuzzle[] = [
         answer: ans,
         clues: [
           { num: 1, dir: "V", clue: "Animal que mia e bebe leite", word: "GATO", row: 0, col: 1 },
-          { num: 2, dir: "H", clue: "Pula na lagoa e faz quá-quá não, faz coaxa", word: "SAPO", row: 1, col: 0 },
+          { num: 2, dir: "H", clue: "Pula na lagoa e faz coaxar", word: "SAPO", row: 1, col: 0 },
           { num: 3, dir: "H", clue: "Fica no alto da nossa casa", word: "TETO", row: 2, col: 1 },
           { num: 4, dir: "H", clue: "A galinha bota no ninho", word: "OVO", row: 3, col: 1 },
         ],
@@ -437,13 +440,14 @@ export const CROSSWORD_POOL: CrosswordPuzzle[] = [
   // 3. H: SAPO (r2,c2: S, A, P, O) - cruza no S (r2,c2)
   // 4. H: MALA (r3,c1: M, A, L, A) - cruza no A (r3,c2)
   (() => {
-    const ans: (string | null)[][] = [
-      [null, null, "C", null, null],
-      [null, "P", "A", "T", "O"],
-      [null, null, "S", "A", "P", "O"],
-      [null, "M", "A", "L", "A"],
-      [null, null, null, null, null],
-    ];
+      const ans: (string | null)[][] = [
+        [null, null, "C", null, null, null],
+        [null, "P", "A", "T", "O", null],
+        [null, null, "S", "A", "P", "O"],
+        [null, "M", "A", "L", "A", null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+      ];
     return {
       gridSize: 6,
       answer: ans,
