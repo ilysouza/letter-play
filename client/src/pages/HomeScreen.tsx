@@ -18,20 +18,22 @@ export default function HomeScreen({ onNavigate }: Props) {
               <button onClick={() => onNavigate("student-login")} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-teal-500 px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_6px_0_#0f766e] transition-all hover:bg-teal-600 active:translate-y-1 active:shadow-none">🎒 Entrar como aluno</button>
               <button onClick={() => onNavigate("teacher-login")} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-fuchsia-200 bg-white px-5 py-3.5 text-sm font-extrabold text-slate-800 shadow-[0_6px_0_#f5d0fe] transition-all hover:bg-fuchsia-50 active:translate-y-1 active:shadow-none">🧑‍🏫 Área do professor</button>
             </div>
-            <p className="mt-7 text-xs font-semibold text-slate-400">Demonstração: maria@escola.com / 123</p>
           </section>
-          <section className="relative mt-5 min-h-[300px] overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-200 via-fuchsia-100 to-amber-100 shadow-[0_10px_0_#c7d2fe] sm:min-h-[400px] lg:mt-0 lg:min-h-[440px]">
-            <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#c7e9e4]" />
-            <div className="absolute -bottom-28 -left-16 h-80 w-80 rounded-full bg-[#f6e8c7]" />
-            <div className="relative flex h-full min-h-[300px] items-center justify-center p-5 sm:min-h-[400px] sm:p-10 lg:min-h-[440px]">
-              <div className="max-w-xs rounded-3xl border-2 border-white/80 bg-white/90 p-6 shadow-xl backdrop-blur-sm sm:p-7">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Hoje</p>
-                <p className="mt-3 font-title text-3xl font-bold text-slate-900">10 atividades</p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-500">Escolha uma missão e avance no seu ritmo, com dicas quando precisar.</p>
-                <div className="mt-7 h-1.5 w-full bg-slate-200"><div className="h-full w-2/3 bg-teal-500" /></div>
-              </div>
-            </div>
-          </section>
+          <section
+  className="relative mt-5 min-h-[300px] overflow-hidden rounded-[2rem] bg-cover bg-center shadow-[0_10px_0_#c7d2fe] sm:min-h-[400px] lg:mt-0 lg:min-h-[440px]"
+  style={{
+    backgroundImage:
+      "url('https://img.magnific.com/fotos-gratis/criancas-lendo-na-biblioteca_1098-4048.jpg?semt=ais_hybrid&w=740&q=80')",
+  }}
+>
+  <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/30 via-fuchsia-200/20 to-amber-200/30" />
+
+  <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#c7e9e4]/50" />
+
+  <div className="absolute -bottom-28 -left-16 h-80 w-80 rounded-full bg-[#f6e8c7]/50" />
+
+  <div className="absolute bottom-10 right-24 h-32 w-32 rounded-full bg-white/20" />
+</section>
         </div>
       </div>
     </main>
