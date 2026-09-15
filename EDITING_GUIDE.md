@@ -71,6 +71,26 @@ pnpm check
 pnpm run build
 ```
 
+## Como instalar no Windows
+
+O projeto funciona com `npm` e `pnpm`. Para usar npm, clone o repositório e execute:
+
+```bash
+npm install
+npm run check
+npm run dev
+```
+
+Também é possível usar pnpm, que é o gerenciador original do projeto:
+
+```bash
+pnpm install
+pnpm check
+pnpm dev
+```
+
+O conflito antigo entre o Vite 7 e o plugin `@builder.io/vite-plugin-jsx-loc` foi removido da configuração, então `npm install` não precisa de `--legacy-peer-deps`.
+
 Para conferir a tela no navegador, use o preview do projeto. As dimensões importantes são:
 
 - Celular: `375x812`
