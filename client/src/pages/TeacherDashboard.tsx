@@ -13,7 +13,7 @@ import {
   getLevelInfo,
   formatDate,
 } from "@/store";
-import { GAME_LABELS } from "@/dailyWords";
+import { GAME_LABELS } from "@/content/wordBank";
 import {
   Users,
   GraduationCap,

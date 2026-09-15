@@ -1,6 +1,6 @@
 import React from "react";
 import { Student, Screen } from "@/types";
-import { GAME_LABELS } from "@/dailyWords";
+import { GAME_LABELS } from "@/content/wordBank";
 import { getStudentAvgScore, getLevelInfo } from "@/store";
 import { LogOut, ArrowUpRight } from "lucide-react";
 

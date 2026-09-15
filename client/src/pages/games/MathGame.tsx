@@ -4,7 +4,7 @@ import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared
 import { updateStudentScore } from "@/store";
 import { speakMath } from "@/audio";
 import { Timer, Volume2 } from "lucide-react";
-import { shuffle } from "@/dailyWords";
+import { shuffle } from "@/content/wordBank";
 
 interface Props {
   student: Student;

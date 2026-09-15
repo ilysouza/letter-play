@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult } from "@/components/GameShared";
-import { ALL_RACE_WORDS, shuffle } from "@/dailyWords";
+import { ALL_RACE_WORDS, shuffle } from "@/content/wordBank";
 import { getStudentRound, updateStudentScore } from "@/store";
 import { speak } from "@/audio";
 import { Search, Volume2, Sparkles } from "lucide-react";

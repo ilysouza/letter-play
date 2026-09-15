@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult } from "@/components/GameShared";
-import { getDailyCrossword, CrosswordPuzzle } from "@/dailyWords";
+import { getDailyCrossword, CrosswordPuzzle } from "@/content/wordBank";
 import { updateStudentScore, getStudentRound } from "@/store";
 
 interface Props {

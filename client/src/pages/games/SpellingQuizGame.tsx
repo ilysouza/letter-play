@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
-import { getDailyQuizQuestions, QuizQuestion, generateSpellingHint } from "@/dailyWords";
+import { getDailyQuizQuestions, QuizQuestion, generateSpellingHint } from "@/content/wordBank";
 import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Volume2 } from "lucide-react";

@@ -1,17 +1,17 @@
-// dailyWords.ts — Conteúdo pedagógico e rotação diária de atividades
-import dinoImg from "@/imports/dino.png";
-import butterflyImg from "@/imports/butterfly.jpg";
-import llamaImg from "@/imports/llama.jpg";
-import chocolateImg from "@/imports/chocolate.jpg";
-import sapoImg from "@/imports/sapo.jpg";
-import patoImg from "@/imports/pato.jpg";
-import focaImg from "@/imports/foca.jpg";
-import loboImg from "@/imports/lobo.jpg";
-import chaveImg from "@/imports/chave.jpg";
-import escolaImg from "@/imports/escola.jpg";
-import cadernoImg from "@/imports/caderno.jpg";
-import janelaImg from "@/imports/janela.jpg";
-import computadorImg from "@/imports/computador.jpg";
+// wordBank.ts — Conteúdo pedagógico e rotação diária de atividades
+import dinoImg from "@/assets/words/dino.png";
+import butterflyImg from "@/assets/words/butterfly.jpg";
+import llamaImg from "@/assets/words/llama.jpg";
+import chocolateImg from "@/assets/words/chocolate.jpg";
+import sapoImg from "@/assets/words/sapo.jpg";
+import patoImg from "@/assets/words/pato.jpg";
+import focaImg from "@/assets/words/foca.jpg";
+import loboImg from "@/assets/words/lobo.jpg";
+import chaveImg from "@/assets/words/chave.jpg";
+import escolaImg from "@/assets/words/escola.jpg";
+import cadernoImg from "@/assets/words/caderno.jpg";
+import janelaImg from "@/assets/words/janela.jpg";
+import computadorImg from "@/assets/words/computador.jpg";
 
 // Imagens de palavras claras e semanticamente verificadas (35 palavras)
 export const WORD_IMAGES: Record<string, string> = {
