@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
 import { getDailyRaceWords, shuffle } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Timer, Volume2 } from "lucide-react";
 
@@ -31,7 +31,7 @@ export default function WordRaceGame({ student, onBack }: Props) {
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
-    const list = getDailyRaceWords();
+    const list = getDailyRaceWords(getStudentRound(student.id, "word-race", Math.ceil(31 / 6)));
     setWords(list);
     initWord(list[0], 0);
 
@@ -51,8 +51,11 @@ export default function WordRaceGame({ student, onBack }: Props) {
     setFlashWrong(false);
     isTransitioningRef.current = false;
 
-    // Embaralhar letras da palavra com IDs únicos
-    const letters = item.word.split("");
+    // Misturar as letras da palavra com letras distratoras. O aluno precisa
+    // pensar na ordem e também ignorar opções que não pertencem à resposta.
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    const distractors = shuffle(alphabet.filter((letter) => !item.word.includes(letter))).slice(0, 3);
+    const letters = [...item.word.split(""), ...distractors];
     const shuffled = shuffle(letters).map((l, i) => ({
       id: `${l}-${i}-${Math.random()}`,
       letter: l,
@@ -162,7 +165,7 @@ export default function WordRaceGame({ student, onBack }: Props) {
   const remainingLetters = currentWordObj.word.length - nextLetterIndex;
   const hintText =
     remainingLetters > 0
-      ? `a próxima letra é "${currentWordObj.word[nextLetterIndex]}" — faltam ${remainingLetters} letra(s)!`
+      ? `pense no som da palavra — faltam ${remainingLetters} letra(s)!`
       : "";
 
   const timerColor =

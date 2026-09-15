@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
 import { getDailyDragWords, DragWordItem, shuffle } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Volume2 } from "lucide-react";
 
@@ -31,7 +31,7 @@ export default function DragDropGame({ student, onBack }: Props) {
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
-    const list = getDailyDragWords();
+    const list = getDailyDragWords(getStudentRound(student.id, "drag-drop", Math.ceil(30 / 5)));
     setWords(list);
     initWord(list[0], 0, list);
   }, []);
@@ -166,7 +166,7 @@ export default function DragDropGame({ student, onBack }: Props) {
   const nextEmptySlot = placedSyllables.findIndex((s) => s === null);
   const hintText =
     nextEmptySlot !== -1
-      ? `a ${nextEmptySlot + 1}ª sílaba é "${currentWord.syllables[nextEmptySlot]}" — a palavra tem ${currentWord.syllables.length} sílabas!`
+      ? `a ${nextEmptySlot + 1}ª sílaba começa com "${currentWord.syllables[nextEmptySlot][0]}" — a palavra tem ${currentWord.syllables.length} sílabas!`
       : "";
 
   return (

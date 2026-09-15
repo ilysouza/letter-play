@@ -56,6 +56,12 @@ export function saveSessions(sessions: GameSession[]): void {
 }
 
 // Atualizar pontuação e XP do aluno após uma partida
+export function getStudentRound(studentId: string, game: string, poolLength: number): number {
+  if (poolLength <= 0) return 0;
+  const student = getStoredStudents().find((s) => s.id === studentId);
+  return (student?.gamesPlayed?.[game] || 0) % poolLength;
+}
+
 export function updateStudentScore(studentId: string, game: string, score: number, xp: number): void {
   const students = getStoredStudents();
   const student = students.find((s) => s.id === studentId);

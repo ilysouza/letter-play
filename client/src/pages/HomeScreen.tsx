@@ -27,7 +27,7 @@ export default function HomeScreen({ onNavigate }: Props) {
             <div className="relative flex h-full min-h-[440px] items-center justify-center p-10">
               <div className="max-w-xs border border-white/70 bg-white/80 p-7 shadow-sm backdrop-blur-sm">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Hoje</p>
-                <p className="mt-3 font-title text-3xl font-bold text-slate-900">9 atividades</p>
+                <p className="mt-3 font-title text-3xl font-bold text-slate-900">10 atividades</p>
                 <p className="mt-3 text-sm leading-relaxed text-slate-500">Escolha uma missão e avance no seu ritmo, com dicas quando precisar.</p>
                 <div className="mt-7 h-1.5 w-full bg-slate-200"><div className="h-full w-2/3 bg-teal-500" /></div>
               </div>

@@ -20,13 +20,13 @@ export function GameHeader({ title, emoji, onBack, progress, total, score }: Gam
           <ArrowLeft className="w-4 h-4" /> Voltar
         </button>
         <div className="flex min-w-0 items-center gap-2">
-          {emoji && <span className="text-lg grayscale">{emoji}</span>}
+          {emoji && <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-100 to-indigo-100 text-lg shadow-sm transition-transform hover:rotate-6 hover:scale-110">{emoji}</span>}
           <h1 className="truncate font-title text-xl sm:text-2xl font-bold text-slate-900">{title}</h1>
         </div>
         <div className="text-sm font-bold text-slate-600 whitespace-nowrap">{score}/{total}</div>
       </div>
       <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-        <div className="h-full rounded-full bg-teal-500 transition-all duration-500" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-gradient-to-r from-teal-500 via-indigo-500 to-amber-400 transition-all duration-500" style={{ width: `${pct}%` }} />
       </div>
     </header>
   );

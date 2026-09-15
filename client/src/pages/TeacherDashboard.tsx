@@ -501,10 +501,11 @@ export default function TeacherDashboard({ teacher, onLogout }: Props) {
                               {/* Botão Áudio On/Off */}
                               <button
                                 onClick={() => handleToggleAudio(student.id)}
-                                className={`p-2 rounded-lg border transition-all ${
+                                aria-pressed={student.audioEnabled}
+                                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-extrabold transition-all ${
                                   student.audioEnabled
-                                    ? "bg-amber-100 border-slate-300 text-slate-800"
-                                    : "bg-gray-100 border-gray-300 text-gray-400"
+                                    ? "bg-teal-50 border-teal-200 text-teal-700"
+                                    : "bg-slate-100 border-slate-300 text-slate-500"
                                 }`}
                                 title={
                                   student.audioEnabled
@@ -513,9 +514,9 @@ export default function TeacherDashboard({ teacher, onLogout }: Props) {
                                 }
                               >
                                 {student.audioEnabled ? (
-                                  <Volume2 className="w-5 h-5 text-teal-700" />
+                                  <><Volume2 className="w-4 h-4" /> Áudio ligado</>
                                 ) : (
-                                  <VolumeX className="w-5 h-5" />
+                                  <><VolumeX className="w-4 h-4" /> Áudio desligado</>
                                 )}
                               </button>
 

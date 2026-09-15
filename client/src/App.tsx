@@ -10,7 +10,7 @@ import TeacherDashboard from "@/pages/TeacherDashboard";
 import StudentLogin from "@/pages/StudentLogin";
 import StudentHub from "@/pages/StudentHub";
 
-// Os 9 Jogos
+// As 10 atividades educativas
 import DragDropGame from "@/pages/games/DragDropGame";
 import SpellingQuizGame from "@/pages/games/SpellingQuizGame";
 import WordRaceGame from "@/pages/games/WordRaceGame";
@@ -20,6 +20,7 @@ import CrosswordGame from "@/pages/games/CrosswordGame";
 import MathGame from "@/pages/games/MathGame";
 import DrawingGame from "@/pages/games/DrawingGame";
 import MathPortuguesGame from "@/pages/games/MathPortuguesGame";
+import LetterHuntGame from "@/pages/games/LetterHuntGame";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -159,6 +160,10 @@ export default function App() {
 
           {screen === "game-math-portugues" && (
             <MathPortuguesGame student={currentStudent} onBack={() => navigate("student-hub")} />
+          )}
+
+          {screen === "game-letter-hunt" && (
+            <LetterHuntGame student={currentStudent} onBack={() => navigate("student-hub")} />
           )}
         </>
       )}

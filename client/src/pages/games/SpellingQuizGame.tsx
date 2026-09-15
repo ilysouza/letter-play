@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
 import { getDailyQuizQuestions, QuizQuestion, generateSpellingHint } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Volume2 } from "lucide-react";
 
@@ -28,7 +28,7 @@ export default function SpellingQuizGame({ student, onBack }: Props) {
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
-    const list = getDailyQuizQuestions();
+    const list = getDailyQuizQuestions(getStudentRound(student.id, "spelling-quiz", 5));
     setQuestions(list);
     initQuestion(list[0], 0);
   }, []);

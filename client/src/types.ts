@@ -50,3 +50,4 @@ export type Screen =
   | "game-math"
   | "game-drawing"
   | "game-math-portugues"
+  | "game-letter-hunt"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult } from "@/components/GameShared";
 import { getDailyImagePairs, getSpellingDistractors, shuffle, ImagePair } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 import { Check, X } from "lucide-react";
 
 interface Props {
@@ -22,7 +22,7 @@ export default function ImageWordGame({ student, onBack }: Props) {
   const [finalScore, setFinalScore] = useState(0);
 
   useEffect(() => {
-    const list = getDailyImagePairs();
+    const list = getDailyImagePairs(getStudentRound(student.id, "image-word", 5));
     setPairs(list);
 
     const correctWords = list.map((p) => p.word);

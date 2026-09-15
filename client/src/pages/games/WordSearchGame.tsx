@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult } from "@/components/GameShared";
 import { getDailySearchPuzzle, SearchPuzzle } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 import { Check, CheckCircle2 } from "lucide-react";
 
 interface Props {
@@ -34,7 +34,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    setPuzzle(getDailySearchPuzzle());
+    setPuzzle(getDailySearchPuzzle(getStudentRound(student.id, "word-search", 3)));
   }, []);
 
   // Calcula linha reta (H, V ou Diagonal 45°)

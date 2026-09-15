@@ -99,8 +99,10 @@ export const ALL_DRAG_WORDS: DragWordItem[] = [
   { word: "PASSARINHO", syllables: ["PAS", "SA", "RI", "NHO"], image: WORD_IMAGES.PASSARINHO },
 ];
 
-export function getDailyDragWords(): DragWordItem[] {
-  return shuffle(ALL_DRAG_WORDS).slice(0, 5);
+export function getDailyDragWords(round = 0): DragWordItem[] {
+  const start = (round * 5) % ALL_DRAG_WORDS.length;
+  const rotated = [...ALL_DRAG_WORDS.slice(start), ...ALL_DRAG_WORDS.slice(0, start)];
+  return rotated.slice(0, 5);
 }
 
 // 2. QUIZ_POOL (5 sets de 5 perguntas com distratores fonéticos/ortográficos plausíveis)
@@ -153,8 +155,8 @@ export const QUIZ_POOL: QuizQuestion[][] = [
   ],
 ];
 
-export function getDailyQuizQuestions(): QuizQuestion[] {
-  const chosenSet = pickSet(QUIZ_POOL);
+export function getDailyQuizQuestions(round = getDayIndex()): QuizQuestion[] {
+  const chosenSet = QUIZ_POOL[((round % QUIZ_POOL.length) + QUIZ_POOL.length) % QUIZ_POOL.length];
   return chosenSet.map((q) => ({
     ...q,
     options: shuffle(q.options),
@@ -187,8 +189,10 @@ export const ALL_RACE_WORDS = Object.keys(WORD_IMAGES).map((word) => ({
   image: WORD_IMAGES[word],
 }));
 
-export function getDailyRaceWords() {
-  return shuffle(ALL_RACE_WORDS).slice(0, 6);
+export function getDailyRaceWords(round = 0) {
+  const start = (round * 6) % ALL_RACE_WORDS.length;
+  const rotated = [...ALL_RACE_WORDS.slice(start), ...ALL_RACE_WORDS.slice(0, start)];
+  return rotated.slice(0, 6);
 }
 
 // 4. MISSPELLINGS
@@ -293,8 +297,8 @@ export const SEARCH_POOL: SearchPuzzle[] = [
   },
 ];
 
-export function getDailySearchPuzzle(): SearchPuzzle {
-  return pickSet(SEARCH_POOL);
+export function getDailySearchPuzzle(round = getDayIndex()): SearchPuzzle {
+  return SEARCH_POOL[((round % SEARCH_POOL.length) + SEARCH_POOL.length) % SEARCH_POOL.length];
 }
 
 // 6. IMAGE_POOL (5 sets de 4 pares com distratores)
@@ -336,8 +340,8 @@ export const IMAGE_POOL: ImagePair[][] = [
   ],
 ];
 
-export function getDailyImagePairs(): ImagePair[] {
-  return pickSet(IMAGE_POOL);
+export function getDailyImagePairs(round = getDayIndex()): ImagePair[] {
+  return IMAGE_POOL[((round % IMAGE_POOL.length) + IMAGE_POOL.length) % IMAGE_POOL.length];
 }
 
 export function getSpellingDistractors(correctWords: string[]): string[] {
@@ -493,8 +497,8 @@ export const CROSSWORD_POOL: CrosswordPuzzle[] = [
   })(),
 ];
 
-export function getDailyCrossword(): CrosswordPuzzle {
-  return pickSet(CROSSWORD_POOL);
+export function getDailyCrossword(round = getDayIndex()): CrosswordPuzzle {
+  return CROSSWORD_POOL[((round % CROSSWORD_POOL.length) + CROSSWORD_POOL.length) % CROSSWORD_POOL.length];
 }
 
 // 8. GAME_LABELS
@@ -507,6 +511,7 @@ export const GAME_LABELS: Record<string, { name: string; emoji: string; desc: st
   "crossword": { name: "Cruzadinha", emoji: "✏️", desc: "Preencha as letras com as pistas das palavras!" },
   "math": { name: "Matemática", emoji: "🔢", desc: "Resolva as continhas de mais e menos com bolinhas!" },
   "drawing": { name: "Desenho Livre", emoji: "🎨", desc: "Solte a criatividade com cores e pinceis divertidos!" },
+  "letter-hunt": { name: "Caça à Letra", emoji: "🔎", desc: "Observe a imagem e encontre a letra inicial." },
   "math-portugues": { name: "Conta e Escreve", emoji: "🔢📝", desc: "Calcule e encontre o número por extenso!" },
 };
 

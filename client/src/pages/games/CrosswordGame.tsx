@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult } from "@/components/GameShared";
 import { getDailyCrossword, CrosswordPuzzle } from "@/dailyWords";
-import { updateStudentScore } from "@/store";
+import { updateStudentScore, getStudentRound } from "@/store";
 
 interface Props {
   student: Student;
@@ -22,7 +22,7 @@ export default function CrosswordGame({ student, onBack }: Props) {
   const inputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   useEffect(() => {
-    const p = getDailyCrossword();
+    const p = getDailyCrossword(getStudentRound(student.id, "crossword", 4));
     setPuzzle(p);
 
     const initial = Array.from({ length: p.gridSize }, () =>
