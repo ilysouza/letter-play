@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
-import { getDailyRaceWords, shuffle } from "@/dailyWords";
+import { getDailyRaceWords, shuffle, ALL_RACE_WORDS } from "@/dailyWords";
 import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Timer, Volume2 } from "lucide-react";
@@ -31,7 +31,7 @@ export default function WordRaceGame({ student, onBack }: Props) {
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
-    const list = getDailyRaceWords(getStudentRound(student.id, "word-race", Math.ceil(31 / 6)));
+    const list = getDailyRaceWords(getStudentRound(student.id, "word-race", Math.ceil(ALL_RACE_WORDS.length / 6)));
     setWords(list);
     initWord(list[0], 0);
 

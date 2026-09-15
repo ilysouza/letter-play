@@ -34,7 +34,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    setPuzzle(getDailySearchPuzzle(getStudentRound(student.id, "word-search", 3)));
+    setPuzzle(getDailySearchPuzzle(getStudentRound(student.id, "word-search", 4)));
   }, []);
 
   // Calcula linha reta (H, V ou Diagonal 45°)

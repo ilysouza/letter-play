@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Student } from "@/types";
 import { GameHeader, GameResult, Hearts, HintBox } from "@/components/GameShared";
-import { getDailyDragWords, DragWordItem, shuffle } from "@/dailyWords";
+import { getDailyDragWords, DragWordItem, shuffle, ALL_DRAG_WORDS } from "@/dailyWords";
 import { updateStudentScore, getStudentRound } from "@/store";
 import { speak } from "@/audio";
 import { Volume2 } from "lucide-react";
@@ -31,7 +31,7 @@ export default function DragDropGame({ student, onBack }: Props) {
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
-    const list = getDailyDragWords(getStudentRound(student.id, "drag-drop", Math.ceil(30 / 5)));
+    const list = getDailyDragWords(getStudentRound(student.id, "drag-drop", Math.ceil(ALL_DRAG_WORDS.length / 5)));
     setWords(list);
     initWord(list[0], 0, list);
   }, []);

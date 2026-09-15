@@ -3,18 +3,27 @@ import dinoImg from "@/imports/dino.png";
 import butterflyImg from "@/imports/butterfly.jpg";
 import llamaImg from "@/imports/llama.jpg";
 import chocolateImg from "@/imports/chocolate.jpg";
+import sapoImg from "@/imports/sapo.jpg";
+import patoImg from "@/imports/pato.jpg";
+import focaImg from "@/imports/foca.jpg";
+import loboImg from "@/imports/lobo.jpg";
+import chaveImg from "@/imports/chave.jpg";
+import escolaImg from "@/imports/escola.jpg";
+import cadernoImg from "@/imports/caderno.jpg";
+import janelaImg from "@/imports/janela.jpg";
+import computadorImg from "@/imports/computador.jpg";
 
-// Imagens de palavras Unsplash de alta qualidade (31 palavras)
+// Imagens de palavras claras e semanticamente verificadas (35 palavras)
 export const WORD_IMAGES: Record<string, string> = {
   GATO: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&auto=format",
-  SAPO: "https://images.unsplash.com/photo-1579202673506-ca3ce28943ef?w=400&h=400&fit=crop&auto=format",
-  PATO: "https://images.unsplash.com/photo-1555848962-6e79363ec58f?w=400&h=400&fit=crop&auto=format",
+  SAPO: sapoImg,
+  PATO: patoImg,
   BOLA: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=400&h=400&fit=crop&auto=format",
   CASA: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&h=400&fit=crop&auto=format",
   MALA: "https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=400&h=400&fit=crop&auto=format",
-  FOCA: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&h=400&fit=crop&auto=format",
+  FOCA: focaImg,
   VACA: "https://images.unsplash.com/photo-1546445317-29f4545e9d53?w=400&h=400&fit=crop&auto=format",
-  LOBO: "https://images.unsplash.com/photo-1564865878688-9a244444042a?w=400&h=400&fit=crop&auto=format",
+  LOBO: loboImg,
   BOLO: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=400&fit=crop&auto=format",
   MOTO: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&h=400&fit=crop&auto=format",
   LAGO: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=400&fit=crop&auto=format",
@@ -35,8 +44,12 @@ export const WORD_IMAGES: Record<string, string> = {
   CHOCOLATE: chocolateImg,
   PASSARINHO: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=400&h=400&fit=crop&auto=format",
   DINOSSAURO: dinoImg,
-  CHAVE: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&h=400&fit=crop&auto=format",
+  CHAVE: chaveImg,
   CHUVA: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=400&h=400&fit=crop&auto=format",
+  ESCOLA: escolaImg,
+  CADERNO: cadernoImg,
+  JANELA: janelaImg,
+  COMPUTADOR: computadorImg,
 };
 
 // Dias desde 2026-01-01 para rotação determinística diária
@@ -59,7 +72,7 @@ export function shuffle<T>(arr: T[]): T[] {
   return copy;
 }
 
-// 1. ALL_DRAG_WORDS (30 palavras com decomposição silábica)
+// 1. ALL_DRAG_WORDS (34 palavras com decomposição silábica; maioria com 6+ letras)
 export interface DragWordItem {
   word: string;
   syllables: string[];
@@ -97,12 +110,20 @@ export const ALL_DRAG_WORDS: DragWordItem[] = [
   { word: "GALINHA", syllables: ["GA", "LI", "NHA"], image: WORD_IMAGES.GALINHA },
   { word: "CHOCOLATE", syllables: ["CHO", "CO", "LA", "TE"], image: WORD_IMAGES.CHOCOLATE },
   { word: "PASSARINHO", syllables: ["PAS", "SA", "RI", "NHO"], image: WORD_IMAGES.PASSARINHO },
+  { word: "ESCOLA", syllables: ["ES", "CO", "LA"], image: escolaImg },
+  { word: "CADERNO", syllables: ["CA", "DER", "NO"], image: cadernoImg },
+  { word: "JANELA", syllables: ["JA", "NE", "LA"], image: janelaImg },
+  { word: "COMPUTADOR", syllables: ["COM", "PU", "TA", "DOR"], image: computadorImg },
 ];
 
 export function getDailyDragWords(round = 0): DragWordItem[] {
-  const start = (round * 5) % ALL_DRAG_WORDS.length;
-  const rotated = [...ALL_DRAG_WORDS.slice(start), ...ALL_DRAG_WORDS.slice(0, start)];
-  return rotated.slice(0, 5);
+  const long = ALL_DRAG_WORDS.filter((item) => item.word.length >= 6);
+  const short = ALL_DRAG_WORDS.filter((item) => item.word.length < 6);
+  const rotate = <T,>(pool: T[], amount: number) => {
+    const start = amount % pool.length;
+    return [...pool.slice(start), ...pool.slice(0, start)];
+  };
+  return [...rotate(long, round * 3).slice(0, 3), ...rotate(short, round * 2).slice(0, 2)];
 }
 
 // 2. QUIZ_POOL (5 sets de 5 perguntas com distratores fonéticos/ortográficos plausíveis)
@@ -147,11 +168,11 @@ export const QUIZ_POOL: QuizQuestion[][] = [
   ],
   // Set 5
   [
-    { word: "CASA", image: WORD_IMAGES.CASA, options: ["CASA", "CAZA", "KASA", "KAZA"] },
-    { word: "SAPO", image: WORD_IMAGES.SAPO, options: ["SAPO", "CAPO", "SAPPU", "ZAPO"] },
-    { word: "PATO", image: WORD_IMAGES.PATO, options: ["PATO", "BATO", "PATTO", "PATU"] },
-    { word: "GATO", image: WORD_IMAGES.GATO, options: ["GATO", "JATO", "GATTO", "GATU"] },
-    { word: "VACA", image: WORD_IMAGES.VACA, options: ["VACA", "BACA", "VAKKA", "VACCA"] },
+    { word: "COMPUTADOR", image: WORD_IMAGES.COMPUTADOR, options: ["COMPUTADOR", "COMPUTADRO", "COMPUTADORR", "CONPUTADOR"] },
+    { word: "ESCOLA", image: WORD_IMAGES.ESCOLA, options: ["ESCOLA", "ESKOLA", "ESCOLLA", "EZCOLA"] },
+    { word: "CADERNO", image: WORD_IMAGES.CADERNO, options: ["CADERNO", "KADERNO", "CADERNU", "CADDERNO"] },
+    { word: "JANELA", image: WORD_IMAGES.JANELA, options: ["JANELA", "GANELA", "JANELLA", "JANERA"] },
+    { word: "DINOSSAURO", image: WORD_IMAGES.DINOSSAURO, options: ["DINOSSAURO", "DINOSAURO", "DINOSSARO", "DINOZAURO"] },
   ],
 ];
 
@@ -293,6 +314,30 @@ export const SEARCH_POOL: SearchPuzzle[] = [
       ["B", "N", "M", "Q", "W", "E", "R", "T", "Y", "U"],
       ["I", "O", "P", "A", "S", "D", "F", "G", "H", "J"],
       ["K", "L", "Z", "X", "C", "V", "B", "N", "M", "Q"],
+    ],
+  },
+  // Puzzle 4: palavras longas para ampliar leitura e atenção visual
+  {
+    words: [
+      { word: "ESCOLA", image: WORD_IMAGES.ESCOLA },
+      { word: "CADERNO", image: WORD_IMAGES.CADERNO },
+      { word: "JANELA", image: WORD_IMAGES.JANELA },
+      { word: "COMPUTADOR", image: WORD_IMAGES.COMPUTADOR },
+      { word: "DINOSSAURO", image: WORD_IMAGES.DINOSSAURO },
+      { word: "CHOCOLATE", image: WORD_IMAGES.CHOCOLATE },
+      { word: "BICICLETA", image: WORD_IMAGES.BICICLETA },
+    ],
+    grid: [
+      ["E", "S", "C", "O", "L", "A", "Q", "R", "T", "U"],
+      ["C", "A", "D", "E", "R", "N", "O", "P", "Q", "W"],
+      ["J", "A", "N", "E", "L", "A", "M", "B", "V", "X"],
+      ["C", "O", "M", "P", "U", "T", "A", "D", "O", "R"],
+      ["D", "I", "N", "O", "S", "S", "A", "U", "R", "O"],
+      ["C", "H", "O", "C", "O", "L", "A", "T", "E", "X"],
+      ["B", "I", "C", "I", "C", "L", "E", "T", "A", "Q"],
+      ["R", "T", "Y", "U", "I", "O", "P", "A", "S", "D"],
+      ["F", "G", "H", "J", "K", "L", "Z", "X", "C", "V"],
+      ["M", "N", "B", "V", "C", "X", "Z", "L", "K", "J"],
     ],
   },
 ];
