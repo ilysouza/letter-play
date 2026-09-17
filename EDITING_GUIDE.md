@@ -91,6 +91,8 @@ pnpm dev
 
 O conflito antigo entre o Vite 7 e o plugin `@builder.io/vite-plugin-jsx-loc` foi removido da configuração, então `npm install` não precisa de `--legacy-peer-deps`.
 
+Os scripts `dev` e `start` usam `cross-env`, então `npm run dev` funciona tanto no Windows quanto no Linux/macOS. Isso evita o erro `'NODE_ENV' não é reconhecido como um comando interno ou externo`.
+
 Para conferir a tela no navegador, use o preview do projeto. As dimensões importantes são:
 
 - Celular: `375x812`
