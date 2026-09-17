@@ -137,7 +137,7 @@ Esse comando instala os pacotes e dependências definidos no projeto.
 
 ## 4. Iniciar o servidor local
 
-Para iniciar o servidor de desenvolvimento local (`localhost:5173`), execute:
+Para iniciar o servidor de desenvolvimento local (`localhost:3000`), execute:
 
 ```bash
 npm run dev
