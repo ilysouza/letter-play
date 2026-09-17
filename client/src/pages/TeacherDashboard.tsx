@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Teacher, Student, Turma, GameSession } from "@/types";
 import {
   getStoredTurmas,
-  saveTurmas,
   getStoredStudents,
-  saveStudents,
   getStoredSessions,
-  deleteTurma,
-  deleteStudent,
-  toggleStudentAudio,
+  fetchTeacherDataOnline,
+  createTurmaOnline,
+  deleteTurmaOnline,
+  createStudentOnline,
+  updateStudentOnline,
+  deleteStudentOnline,
+  toggleStudentAudioOnline,
   getStudentAvgScore,
   getLevelInfo,
   formatDate,
@@ -39,13 +41,11 @@ type Tab = "turmas" | "alunos" | "desempenho" | "historico";
 
 export default function TeacherDashboard({ teacher, onLogout }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("turmas");
-  const [turmas, setTurmas] = useState<Turma[]>(() =>
-    getStoredTurmas().filter((t) => t.teacherId === teacher.id)
-  );
-  const [students, setStudents] = useState<Student[]>(() =>
-    getStoredStudents().filter((s) => s.teacherId === teacher.id)
-  );
+  const [turmas, setTurmas] = useState<Turma[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [sessions, setSessions] = useState<GameSession[]>(() => getStoredSessions());
+  const [syncing, setSyncing] = useState(true);
+  const [syncError, setSyncError] = useState("");
 
   // Estado para TurmaView
   const [selectedTurma, setSelectedTurma] = useState<Turma | null>(null);
@@ -68,84 +68,78 @@ export default function TeacherDashboard({ teacher, onLogout }: Props) {
   // Aluno selecionado na aba Histórico
   const [historyStudentId, setHistoryStudentId] = useState<string | null>(null);
 
-  const refreshData = () => {
-    setTurmas(getStoredTurmas().filter((t) => t.teacherId === teacher.id));
-    setStudents(getStoredStudents().filter((s) => s.teacherId === teacher.id));
-    setSessions(getStoredSessions());
-  };
-
-  const handleCreateTurma = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newTurma: Turma = {
-      id: `turma-${Date.now()}`,
-      teacherId: teacher.id,
-      year: newYear,
-      letter: newLetter,
-    };
-    const allTurmas = getStoredTurmas();
-    allTurmas.push(newTurma);
-    saveTurmas(allTurmas);
-    setShowCreateTurma(false);
-    refreshData();
-  };
-
-  const handleDeleteTurma = (turmaId: string) => {
-    if (confirm("Tem certeza que deseja excluir esta turma e todos os seus alunos?")) {
-      deleteTurma(turmaId);
-      if (selectedTurma?.id === turmaId) setSelectedTurma(null);
-      refreshData();
+  const refreshData = async () => {
+    setSyncing(true);
+    try {
+      const data = await fetchTeacherDataOnline(teacher.id);
+      setTurmas(data.turmas);
+      setStudents(data.students);
+      setSessions(data.sessions);
+      setSyncError("");
+    } catch (cause) {
+      setTurmas(getStoredTurmas().filter((t) => t.teacherId === teacher.id));
+      setStudents(getStoredStudents().filter((s) => s.teacherId === teacher.id));
+      setSessions(getStoredSessions());
+      setSyncError("Sem conexão com o banco online. Mostrando os dados salvos neste navegador.");
+    } finally {
+      setSyncing(false);
     }
   };
 
-  const handleSaveStudent = (e: React.FormEvent) => {
+  useEffect(() => { void refreshData(); }, [teacher.id]);
+
+  const handleCreateTurma = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createTurmaOnline({ teacherId: teacher.id, year: newYear, letter: newLetter });
+      setShowCreateTurma(false);
+      await refreshData();
+    } catch (cause) {
+      setSyncError(cause instanceof Error ? cause.message : "Não foi possível criar a turma.");
+    }
+  };
+
+  const handleDeleteTurma = async (turmaId: string) => {
+    if (confirm("Tem certeza que deseja excluir esta turma e todos os seus alunos?")) {
+      try {
+        await deleteTurmaOnline(teacher.id, turmaId);
+        if (selectedTurma?.id === turmaId) setSelectedTurma(null);
+        await refreshData();
+      } catch (cause) {
+        setSyncError(cause instanceof Error ? cause.message : "Não foi possível excluir a turma.");
+      }
+    }
+  };
+
+  const handleSaveStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTurma) return;
-
-    const allStudents = getStoredStudents();
-
-    if (editingStudent) {
-      // Atualizar aluno existente
-      const idx = allStudents.findIndex((s) => s.id === editingStudent.id);
-      if (idx !== -1) {
-        allStudents[idx].name = studentFormName.trim();
-        allStudents[idx].email = studentFormEmail.trim();
-        allStudents[idx].password = studentFormPassword;
+    try {
+      if (editingStudent) {
+        await updateStudentOnline({ id: editingStudent.id, name: studentFormName.trim(), email: studentFormEmail.trim().toLowerCase(), password: studentFormPassword, teacherId: teacher.id, turmaId: selectedTurma.id });
+      } else {
+        await createStudentOnline({ name: studentFormName.trim(), email: studentFormEmail.trim().toLowerCase(), password: studentFormPassword, teacherId: teacher.id, turmaId: selectedTurma.id });
       }
-    } else {
-      // Novo aluno
-      const newStudent: Student = {
-        id: `student-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        name: studentFormName.trim(),
-        email: studentFormEmail.trim().toLowerCase(),
-        password: studentFormPassword,
-        teacherId: teacher.id,
-        turmaId: selectedTurma.id,
-        scores: {},
-        gamesPlayed: {},
-        totalPoints: 0,
-        audioEnabled: true,
-      };
-      allStudents.push(newStudent);
+      setShowStudentForm(false);
+      setEditingStudent(null);
+      setStudentFormName("");
+      setStudentFormEmail("");
+      await refreshData();
+    } catch (cause) {
+      setSyncError(cause instanceof Error ? cause.message : "Não foi possível salvar o aluno.");
     }
-
-    saveStudents(allStudents);
-    setShowStudentForm(false);
-    setEditingStudent(null);
-    setStudentFormName("");
-    setStudentFormEmail("");
-    refreshData();
   };
 
-  const handleDeleteStudent = (studentId: string) => {
+  const handleDeleteStudent = async (studentId: string) => {
     if (confirm("Deseja remover este aluno permanentemente?")) {
-      deleteStudent(studentId);
-      refreshData();
+      try { await deleteStudentOnline(teacher.id, studentId); await refreshData(); }
+      catch (cause) { setSyncError(cause instanceof Error ? cause.message : "Não foi possível remover o aluno."); }
     }
   };
 
-  const handleToggleAudio = (studentId: string) => {
-    toggleStudentAudio(studentId);
-    refreshData();
+  const handleToggleAudio = async (studentId: string) => {
+    try { await toggleStudentAudioOnline(teacher.id, studentId); await refreshData(); }
+    catch (cause) { setSyncError(cause instanceof Error ? cause.message : "Não foi possível alterar o áudio."); }
   };
 
   // Alunos da turma atualmente aberta
@@ -216,6 +210,8 @@ export default function TeacherDashboard({ teacher, onLogout }: Props) {
 
       {/* Conteúdo Principal por Aba */}
       <main className="max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex-1">
+        {syncError && <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">{syncError}</div>}
+        {syncing && <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700">Sincronizando turmas, alunos e histórico...</div>}
         {/* ================= ABA 1: TURMAS ================= */}
         {activeTab === "turmas" && (
           <div>

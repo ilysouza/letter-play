@@ -9,7 +9,6 @@ import TeacherRegister from "@/pages/TeacherRegister";
 import TeacherDashboard from "@/pages/TeacherDashboard";
 import StudentLogin from "@/pages/StudentLogin";
 import StudentHub from "@/pages/StudentHub";
-
 // As 10 atividades educativas
 import DragDropGame from "@/pages/games/DragDropGame";
 import SpellingQuizGame from "@/pages/games/SpellingQuizGame";
@@ -62,6 +61,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // make sure to consider if you need authentication for certain routes
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-['Nunito',sans-serif]">
       {/* 1. Tela Inicial */}

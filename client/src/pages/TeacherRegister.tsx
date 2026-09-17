@@ -1,12 +1,38 @@
 import React, { useState } from "react";
-import { getStoredTeachers, saveTeachers } from "@/store";
+import { registerTeacherOnline } from "@/store";
 import { Teacher } from "@/types";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft, UserPlus, Loader2 } from "lucide-react";
 
 interface Props { onSuccess: (teacher: Teacher) => void; onBackToLogin: () => void; }
+
 export default function TeacherRegister({ onSuccess, onBackToLogin }: Props) {
-  const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [confirmPassword, setConfirmPassword] = useState(""); const [error, setError] = useState("");
-  const handleRegister = (e: React.FormEvent) => { e.preventDefault(); setError(""); if (!name.trim() || !email.trim() || !password.trim()) return setError("Preencha todos os campos."); if (password !== confirmPassword) return setError("As senhas não coincidem."); const teachers = getStoredTeachers(); if (teachers.some((t) => t.email.toLowerCase() === email.trim().toLowerCase())) return setError("Este email já está cadastrado."); const teacher: Teacher = { id: `teacher-${Date.now()}`, name: name.trim(), email: email.trim().toLowerCase(), password }; teachers.push(teacher); saveTeachers(teachers); onSuccess(teacher); };
-  const fields = [{ label: "Nome completo", type: "text", value: name, set: setName, placeholder: "Profª Carolina Silva" }, { label: "Email", type: "email", value: email, set: setEmail, placeholder: "seu.email@escola.com" }, { label: "Senha", type: "password", value: password, set: setPassword, placeholder: "Digite sua senha" }, { label: "Confirmar senha", type: "password", value: confirmPassword, set: setConfirmPassword, placeholder: "Repita a senha" }];
-  return <main className="min-h-screen bg-[#f8fafc] px-5 py-8 sm:px-10"><div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-5xl items-center"><div className="w-full max-w-md"><button onClick={onBackToLogin} className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900"><ArrowLeft className="h-4 w-4" /> Voltar ao login</button><div className="soft-panel p-7 sm:p-9"><p className="text-xs font-bold uppercase tracking-[0.16em] text-rose-500">Letter Play</p><h1 className="mt-2 font-title text-3xl font-bold text-slate-950">Criar conta</h1><p className="mt-2 mb-7 text-sm text-slate-500">Configure seu acesso de professor.</p>{error && <div className="mb-4 border-l-2 border-rose-500 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{error}</div>}<form onSubmit={handleRegister} className="space-y-4">{fields.map((field) => <label key={field.label} className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">{field.label}</span><input type={field.type} required value={field.value} onChange={(e) => field.set(e.target.value)} placeholder={field.placeholder} className="w-full border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-rose-500" /></label>)}<button type="submit" className="mt-3 flex w-full items-center justify-center gap-2 bg-rose-500 px-4 py-3.5 text-sm font-extrabold text-white hover:bg-rose-600"><UserPlus className="h-4 w-4" /> Concluir cadastro</button></form></div></div></div></main>;
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
+    if (password !== confirmPassword) return setError("As senhas não coincidem.");
+    setLoading(true);
+    try {
+      onSuccess(await registerTeacherOnline(name, email, password));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Não foi possível criar a conta agora.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fields = [
+    { label: "Nome completo", type: "text", value: name, set: setName, placeholder: "Profª Carolina Silva" },
+    { label: "Email", type: "email", value: email, set: setEmail, placeholder: "seu.email@escola.com" },
+    { label: "Senha", type: "password", value: password, set: setPassword, placeholder: "Digite sua senha" },
+    { label: "Confirmar senha", type: "password", value: confirmPassword, set: setConfirmPassword, placeholder: "Repita a senha" },
+  ];
+
+  return <main className="min-h-screen bg-[#f8fafc] px-5 py-8 sm:px-10"><div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-5xl items-center"><div className="w-full max-w-md"><button onClick={onBackToLogin} className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900"><ArrowLeft className="h-4 w-4" /> Voltar ao login</button><div className="soft-panel p-7 sm:p-9"><p className="text-xs font-bold uppercase tracking-[0.16em] text-rose-500">Letter Play</p><h1 className="mt-2 font-title text-3xl font-bold text-slate-950">Criar conta</h1><p className="mt-2 mb-7 text-sm text-slate-500">Sua conta fica disponível em qualquer computador.</p>{error && <div className="mb-4 border-l-2 border-rose-500 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{error}</div>}<form onSubmit={handleRegister} className="space-y-4">{fields.map((field) => <label key={field.label} className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">{field.label}</span><input type={field.type} required value={field.value} onChange={(e) => field.set(e.target.value)} placeholder={field.placeholder} className="w-full border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-rose-500" /></label>)}<button disabled={loading} type="submit" className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-500 px-4 py-3.5 text-sm font-extrabold text-white shadow-[0_5px_0_#be123c] hover:bg-rose-600 disabled:cursor-wait disabled:opacity-60">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />} {loading ? "Criando..." : "Concluir cadastro"}</button></form></div></div></div></main>;
 }

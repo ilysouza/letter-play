@@ -1,4 +1,5 @@
 import { Teacher, Student, Turma, GameSession } from "./types";
+import { cloudClient } from "./cloud";
 
 const KEY_TEACHERS = "alfajogo_teachers";
 const KEY_STUDENTS = "alfajogo_students";
@@ -55,6 +56,80 @@ export function saveSessions(sessions: GameSession[]): void {
   localStorage.setItem(KEY_SESSIONS, JSON.stringify(sessions));
 }
 
+export async function registerTeacherOnline(name: string, email: string, password: string): Promise<Teacher> {
+  const teacher = await cloudClient.letterPlay.teacherRegister.mutate({ name, email, password });
+  saveTeachers([teacher, ...getStoredTeachers().filter((item) => item.id !== teacher.id)]);
+  return teacher;
+}
+
+export async function loginTeacherOnline(email: string, password: string): Promise<Teacher> {
+  try {
+    const teacher = await cloudClient.letterPlay.teacherLogin.mutate({ email, password });
+    saveTeachers([teacher, ...getStoredTeachers().filter((item) => item.id !== teacher.id)]);
+    return teacher;
+  } catch (error) {
+    const localTeacher = getStoredTeachers().find((item) => item.email.toLowerCase() === email.trim().toLowerCase() && item.password === password);
+    if (!localTeacher) throw error;
+    const migrated = await cloudClient.letterPlay.importLegacyTeacher.mutate({
+      teacher: localTeacher,
+      turmas: getStoredTurmas().filter((item) => item.teacherId === localTeacher.id),
+      students: getStoredStudents().filter((item) => item.teacherId === localTeacher.id),
+      sessions: getStoredSessions(),
+    });
+    saveTeachers([migrated, ...getStoredTeachers().filter((item) => item.id !== migrated.id)]);
+    return migrated;
+  }
+}
+
+export async function loginStudentOnline(email: string, password: string): Promise<Student> {
+  const student = await cloudClient.letterPlay.studentLogin.mutate({ email, password });
+  saveStudents([student, ...getStoredStudents().filter((item) => item.id !== student.id)]);
+  return student;
+}
+
+export async function fetchTeacherDataOnline(teacherId: string) {
+  const data = await cloudClient.letterPlay.teacherData.query({ teacherId });
+  saveTurmas(data.turmas);
+  saveStudents([...data.students, ...getStoredStudents().filter((item) => item.teacherId !== teacherId)]);
+  saveSessions([...data.sessions, ...getStoredSessions().filter((item) => !data.students.some((student) => student.id === item.studentId))]);
+  return data;
+}
+
+export async function createTurmaOnline(input: Omit<Turma, "id">): Promise<Turma> {
+  const turma = await cloudClient.letterPlay.createTurma.mutate(input);
+  saveTurmas([turma, ...getStoredTurmas().filter((item) => item.id !== turma.id)]);
+  return turma;
+}
+
+export async function deleteTurmaOnline(teacherId: string, turmaId: string): Promise<void> {
+  await cloudClient.letterPlay.deleteTurma.mutate({ teacherId, turmaId });
+  deleteTurma(turmaId);
+}
+
+export async function createStudentOnline(input: Omit<Student, "id" | "scores" | "gamesPlayed" | "totalPoints" | "audioEnabled">): Promise<Student> {
+  const student = await cloudClient.letterPlay.createStudent.mutate({ ...input });
+  saveStudents([student, ...getStoredStudents().filter((item) => item.id !== student.id)]);
+  return student;
+}
+
+export async function updateStudentOnline(input: Omit<Student, "scores" | "gamesPlayed" | "totalPoints" | "audioEnabled">): Promise<Student> {
+  const student = await cloudClient.letterPlay.updateStudent.mutate(input);
+  saveStudents([student, ...getStoredStudents().filter((item) => item.id !== student.id)]);
+  return student;
+}
+
+export async function deleteStudentOnline(teacherId: string, studentId: string): Promise<void> {
+  await cloudClient.letterPlay.deleteStudent.mutate({ teacherId, studentId });
+  deleteStudent(studentId);
+}
+
+export async function toggleStudentAudioOnline(teacherId: string, studentId: string): Promise<boolean> {
+  const enabled = await cloudClient.letterPlay.toggleStudentAudio.mutate({ teacherId, studentId });
+  const students = getStoredStudents().map((student) => student.id === studentId ? { ...student, audioEnabled: enabled } : student);
+  saveStudents(students);
+  return enabled;
+}
+
 // Atualizar pontuação e XP do aluno após uma partida
 export function getStudentRound(studentId: string, game: string, poolLength: number): number {
   if (poolLength <= 0) return 0;
@@ -88,6 +163,13 @@ export function updateStudentScore(studentId: string, game: string, score: numbe
   };
   sessions.push(newSession);
   saveSessions(sessions);
+
+  void cloudClient.letterPlay.saveScore.mutate({ studentId, game, score, xp }).then((student) => {
+    const current = getStoredStudents();
+    saveStudents([student, ...current.filter((item) => item.id !== student.id)]);
+  }).catch((error) => {
+    console.warn("[Letter Play] Não foi possível sincronizar a pontuação agora.", error);
+  });
 }
 
 // Inverte audioEnabled e salva
