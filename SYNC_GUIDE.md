@@ -1,4 +1,23 @@
-# Sincronização online — Letter Play
+# Sincronização local e online — Letter Play
+
+## Uso recomendado na escola (sem internet)
+
+O servidor deve ser instalado em **um computador fixo da escola**, que ficará ligado durante o uso. Quando `DATABASE_URL` não estiver definida, o sistema usa automaticamente um arquivo local em `data/letter-play.json`. Esse arquivo é o banco compartilhado: todos os computadores devem abrir a aplicação pelo endereço do servidor, e não por `localhost`.
+
+No computador servidor, execute:
+
+```bash
+npm install
+npm run dev
+```
+
+O servidor escuta em todas as interfaces de rede (`0.0.0.0`). Descubra o IPv4 do computador servidor no Windows com `ipconfig` e, nos outros computadores, abra `http://IP_DO_SERVIDOR:3000` (por exemplo, `http://192.168.1.25:3000`). Se a porta 3000 estiver ocupada, o terminal informará a porta escolhida. Nesse caso, use essa porta no endereço.
+
+No Firewall do Windows, permita o Node.js na rede **Privada** ou crie uma regra de entrada TCP para a porta utilizada. Todos os computadores precisam estar na mesma rede local. O computador servidor precisa permanecer ligado; se ele desligar, a aplicação não poderá ser acessada.
+
+Faça cópia de segurança periódica de `data/letter-play.json`. Não coloque esse arquivo no GitHub: ele contém dados da escola e está protegido pelo `.gitignore`.
+
+Para usar um MySQL local em vez do arquivo JSON, defina `DATABASE_URL` no ambiente do servidor. Nesse caso, o sistema continua usando o router MySQL existente.
 
 ## O que foi corrigido
 
