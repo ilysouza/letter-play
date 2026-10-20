@@ -16,7 +16,7 @@
 
 * Raissa Mauricio
 
-* Yasmim Vitória
+* Yasmim Vitoria
 
 ---
 
