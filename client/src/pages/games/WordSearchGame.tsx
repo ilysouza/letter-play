@@ -30,6 +30,8 @@ export default function WordSearchGame({ student, onBack }: Props) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [startCell, setStartCell] = useState<{ r: number; c: number } | null>(null);
   const [currentSelected, setCurrentSelected] = useState<{ r: number; c: number }[]>([]);
+  const currentSelectedRef = useRef<{ r: number; c: number }[]>([]);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [flashWrong, setFlashWrong] = useState(false);
   const [finished, setFinished] = useState(false);
 
@@ -79,28 +81,51 @@ export default function WordSearchGame({ student, onBack }: Props) {
     return [start];
   };
 
-  const handlePointerDown = (r: number, c: number) => {
-    setIsSelecting(true);
-    setStartCell({ r, c });
-    setCurrentSelected([{ r, c }]);
-  };
-
-  const handlePointerEnter = (r: number, c: number) => {
-    if (!isSelecting || !startCell) return;
-    const line = getLineCells(startCell, { r, c });
+  const updateSelection = (line: { r: number; c: number }[]) => {
+    currentSelectedRef.current = line;
     setCurrentSelected(line);
   };
 
-  const handlePointerUp = () => {
+  const getCellAtPoint = (clientX: number, clientY: number) => {
+    const element = document.elementFromPoint(clientX, clientY);
+    const cell = element?.closest<HTMLElement>('[data-word-search-cell="true"]');
+    if (!cell) return null;
+    const r = Number(cell.dataset.row);
+    const c = Number(cell.dataset.col);
+    return Number.isInteger(r) && Number.isInteger(c) ? { r, c } : null;
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const cell = getCellAtPoint(event.clientX, event.clientY);
+    if (!cell) return;
+    event.preventDefault();
+    gridRef.current?.setPointerCapture(event.pointerId);
+    setIsSelecting(true);
+    setStartCell(cell);
+    updateSelection([cell]);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isSelecting || !startCell) return;
+    const cell = getCellAtPoint(event.clientX, event.clientY);
+    if (!cell) return;
+    updateSelection(getLineCells(startCell, cell));
+  };
+
+  const handlePointerUp = (event?: React.PointerEvent<HTMLDivElement>) => {
     if (!isSelecting || !puzzle) {
       setIsSelecting(false);
       return;
     }
+    if (event && gridRef.current?.hasPointerCapture(event.pointerId)) {
+      gridRef.current.releasePointerCapture(event.pointerId);
+    }
     setIsSelecting(false);
 
     // Extrair palavra formada
-    const wordForward = currentSelected.map((pos) => puzzle.grid[pos.r][pos.c]).join("");
-    const wordBackward = currentSelected
+    const selected = currentSelectedRef.current;
+    const wordForward = selected.map((pos) => puzzle.grid[pos.r][pos.c]).join("");
+    const wordBackward = selected
       .slice()
       .reverse()
       .map((pos) => puzzle.grid[pos.r][pos.c])
@@ -123,7 +148,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
       setWordColors((prev) => ({ ...prev, [matchedWord!]: colorIdx }));
 
       const nextHighlights = { ...cellHighlights };
-      currentSelected.forEach((pos) => {
+      selected.forEach((pos) => {
         nextHighlights[`${pos.r}-${pos.c}`] = colorIdx;
       });
       setCellHighlights(nextHighlights);
@@ -142,7 +167,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
       }, 350);
     }
 
-    setCurrentSelected([]);
+    updateSelection([]);
     setStartCell(null);
   };
 
@@ -178,7 +203,7 @@ export default function WordSearchGame({ student, onBack }: Props) {
     <div
       className="max-w-4xl mx-auto px-4 py-4 select-none"
       onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       <GameHeader
         title="Caça-Palavras"
@@ -197,7 +222,14 @@ export default function WordSearchGame({ student, onBack }: Props) {
               flashWrong ? "border-rose-400 bg-rose-50" : "border-slate-200"
             }`}
           >
-            <div className="grid grid-cols-10 gap-1 sm:gap-1.5 touch-none">
+            <div
+              ref={gridRef}
+              className="grid grid-cols-10 gap-1 sm:gap-1.5 touch-none"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+            >
               {puzzle.grid.map((row, r) =>
                 row.map((letter, c) => {
                   const isSelected = currentSelected.some((pos) => pos.r === r && pos.c === c);
@@ -216,8 +248,9 @@ export default function WordSearchGame({ student, onBack }: Props) {
                   return (
                     <div
                       key={`${r}-${c}`}
-                      onPointerDown={() => handlePointerDown(r, c)}
-                      onPointerEnter={() => handlePointerEnter(r, c)}
+                      data-word-search-cell="true"
+                      data-row={r}
+                      data-col={c}
                       className={`w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg font-['Fredoka'] text-sm sm:text-base md:text-lg flex items-center justify-center border transition-all cursor-pointer select-none ${cellStyle}`}
                     >
                       {letter}
